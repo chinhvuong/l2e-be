@@ -17,7 +17,7 @@ import { QuestionModule } from './question/question.module';
       isGlobal: true,
     }),
     UserModule,
-    MongooseModule.forRoot('mongodb://localhost/l2e'),
+    MongooseModule.forRoot(String(process.env.DB_URL)),
     CourseModule,
     SeedModule,
     QuestionModule,
