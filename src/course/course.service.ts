@@ -1,5 +1,10 @@
 import { UserDocument } from '@/user/schema/user.schema';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CategoryService } from './category.service';
@@ -116,5 +121,88 @@ export class CourseService {
       throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
     }
     return course;
+  }
+
+  async ownCourses(data: CourseFindAllDto, ownerAddress: string) {
+    const match: { [key: string]: any } = {
+      owner: { $regex: new RegExp(ownerAddress, 'i') },
+    };
+
+    if (data.query) {
+      match.name = new RegExp(data.query, 'i');
+    }
+    const pagination: any[] = [];
+    if (data.page !== undefined && data.limit !== undefined) {
+      pagination.push({
+        $skip: data.limit * data.page,
+      });
+    }
+    if (data.limit !== undefined) {
+      pagination.push({
+        $limit: data.limit,
+      });
+    }
+
+    const rs = await this.model.aggregate([
+      { $match: match },
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: pagination,
+        },
+      },
+    ]);
+    return {
+      total: rs[0]?.metadata[0] ? rs[0]?.metadata[0].total : 0,
+      data: rs[0] ? rs[0].data : [],
+    };
+  }
+
+  // admin
+  async unApprovedCourses(data: CourseFindAllDto) {
+    const match: { [key: string]: any } = {
+      approved: false,
+    };
+
+    if (data.query) {
+      match.name = new RegExp(data.query, 'i');
+    }
+    const pagination: any[] = [];
+    if (data.page !== undefined && data.limit !== undefined) {
+      pagination.push({
+        $skip: data.limit * data.page,
+      });
+    }
+    if (data.limit !== undefined) {
+      pagination.push({
+        $limit: data.limit,
+      });
+    }
+
+    const rs = await this.model.aggregate([
+      { $match: match },
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: pagination,
+        },
+      },
+    ]);
+    return {
+      total: rs[0]?.metadata[0] ? rs[0]?.metadata[0].total : 0,
+      data: rs[0] ? rs[0].data : [],
+    };
+  }
+
+  async toggleApproveCourse(id: string) {
+    const course = await this.model.findOne({
+      _id: new ObjectId(id),
+    });
+
+    if (!course) {
+      throw new NotFoundException();
+    }
+    course.approved = !course.approved;
+    return await course.save();
   }
 }

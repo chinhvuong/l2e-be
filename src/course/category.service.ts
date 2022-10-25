@@ -53,6 +53,41 @@ export class CategoryService {
     };
   }
 
+  async ownCourses(data: CategoryFindAllDto, ownerAddress: string) {
+    const match: { [key: string]: any } = {
+      owner: { $regex: new RegExp(ownerAddress, 'i') },
+    };
+
+    if (data.query) {
+      match.name = new RegExp(data.query, 'i');
+    }
+    const pagination: any[] = [];
+    if (data.page !== undefined && data.limit !== undefined) {
+      pagination.push({
+        $skip: data.limit * data.page,
+      });
+    }
+    if (data.limit !== undefined) {
+      pagination.push({
+        $limit: data.limit,
+      });
+    }
+
+    const rs = await this.model.aggregate([
+      { $match: match },
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: pagination,
+        },
+      },
+    ]);
+    return {
+      total: rs[0]?.metadata[0] ? rs[0]?.metadata[0].total : 0,
+      data: rs[0] ? rs[0].data : [],
+    };
+  }
+
   async findOne(...args) {
     return await this.model.findOne(...args);
   }
