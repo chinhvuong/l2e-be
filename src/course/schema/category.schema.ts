@@ -17,6 +17,9 @@ export class Category {
 
   @Prop({ default: null })
   thumbnail: string;
+
+  @Prop({ default: '#000' })
+  color: string;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
