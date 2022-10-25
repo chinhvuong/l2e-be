@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -47,5 +49,51 @@ export class CourseController {
     @Param() { id }: CourseIdDto,
   ) {
     return this.courseService.updateCourse(user, data, id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('manage/own-courses')
+  async ownCourses(
+    @Query() query: CourseFindAllDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return this.courseService.ownCourses(query, user.walletAddress);
+  }
+
+  // admin
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('admin/unapproved-courses')
+  async unApproveCourses(
+    @Query() query: CourseFindAllDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    if (
+      user.walletAddress.toLowerCase() ===
+      process.env.ADMIN_ADDRESS?.toLowerCase()
+    ) {
+      return this.courseService.unApprovedCourses(query);
+    } else {
+      throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
+    }
+  }
+
+  // admin
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Put('admin/toggle-approve-course')
+  async approveCourse(
+    @Body() { id }: CourseIdDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    if (
+      user.walletAddress.toLowerCase() ===
+      process.env.ADMIN_ADDRESS?.toLowerCase()
+    ) {
+      return this.courseService.toggleApproveCourse(id);
+    } else {
+      throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
+    }
   }
 }
