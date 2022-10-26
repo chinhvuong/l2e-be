@@ -38,7 +38,7 @@ export class Course {
   reviews: number;
 
   @Prop({ default: 0 })
-  student: number;
+  students: number;
 
   @Prop({ default: language.EN })
   language: language;
