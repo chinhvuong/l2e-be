@@ -61,6 +61,16 @@ export class CourseController {
     return this.courseService.ownCourses(query, user.walletAddress);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('manage/own-courses/:id')
+  async courseDetailToEdit(
+    @Query() { id }: CourseIdDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return this.courseService.getCourseDetailToEdit(id, user.walletAddress);
+  }
+
   // admin
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -95,5 +105,15 @@ export class CourseController {
     } else {
       throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
     }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('request-mint-signature')
+  async requestSignatureToMint(
+    @Query() { id }: CourseIdDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return this.courseService.getSignatureToMintCourse(id, user);
   }
 }

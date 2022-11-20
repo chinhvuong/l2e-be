@@ -9,8 +9,10 @@ export class UserService {
 
   async findOneOrCreate(walletAddress: string) {
     return await this.model.findOneAndUpdate(
-      { walletAddress: walletAddress },
-      {},
+      { walletAddress: { $regex: new RegExp(walletAddress, 'i') } },
+      {
+        walletAddress: walletAddress,
+      },
       { upsert: true, new: true },
     );
   }

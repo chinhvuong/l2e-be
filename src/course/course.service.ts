@@ -1,4 +1,4 @@
-import { UserDocument } from '@/user/schema/user.schema';
+import { User, UserDocument } from '@/user/schema/user.schema';
 import {
   HttpException,
   HttpStatus,
@@ -13,12 +13,21 @@ import { Course, CourseDocument } from './schema/course.schema';
 import { ObjectId } from 'mongodb';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { CourseFindAllDto } from './dto/course-find-all.dto';
+import { Enroll, EnrollDocument } from './schema/enroll.schema.';
+import { UserService } from '@/user/user.service';
+import { CourseIdDto } from './dto/course-id.dto';
+import { Web3Service } from '@/web3/web3.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CourseService {
   constructor(
     @InjectModel(Course.name) private model: Model<CourseDocument>,
+    @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>,
     private readonly categoryService: CategoryService,
+    private readonly userService: UserService,
+    private readonly web3Service: Web3Service,
+    private readonly configService: ConfigService,
   ) {}
 
   async findAll(data: CourseFindAllDto) {
@@ -104,6 +113,10 @@ export class CourseService {
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  async findOneAndUpdate(...args) {
+    return await this.model.findOneAndUpdate(...args);
   }
 
   async findOne(...args) {
@@ -204,5 +217,55 @@ export class CourseService {
     }
     course.approved = !course.approved;
     return await course.save();
+  }
+
+  // enroll
+  async enrollCourse(student: string, courseId: number) {
+    const [course, user] = await Promise.all([
+      await this.model.findOne({
+        courseId: courseId,
+      }),
+      await this.userService.findOneOrCreate(student),
+    ]);
+    if (user && course) {
+      return await new this.enrollModel({
+        courseId: course._id,
+        userId: user._id,
+      }).save();
+    }
+  }
+
+  // mint course
+  async getSignatureToMintCourse(courseId: string, user: UserDocument) {
+    const course = await this.validateOwner(courseId, user.walletAddress);
+
+    if (course.courseId || isNaN(course.price) || course.approved === false) {
+      throw new HttpException('No', HttpStatus.BAD_REQUEST);
+    }
+
+    console.log(Number(this.configService.get('USDT_DECIMAL')));
+
+    const price =
+      course.price * 10 ** Number(this.configService.get('USDT_DECIMAL'));
+    const signature = await this.web3Service.signToCreateCourse(
+      `${price}`,
+      user.nonce,
+      user.walletAddress,
+    );
+    user.nonce = user.nonce + 1;
+    await user.save();
+    return {
+      price: `${price}`,
+      v: signature.v,
+      r: signature.r,
+      s: signature.s,
+      nonce: user.nonce - 1,
+    };
+  }
+
+  async getCourseDetailToEdit(courseId: string, owner: string) {
+    const course = await this.validateOwner(courseId, owner);
+
+    return course;
   }
 }
