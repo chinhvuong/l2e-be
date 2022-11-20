@@ -13,6 +13,10 @@ import { Category, CategorySchema } from './schema/category.schema';
 import { Course, CourseSchema } from './schema/course.schema';
 import { Enroll, EnrollSchema } from './schema/enroll.schema.';
 import { Lesson, LessonSchema } from './schema/lesson.schema';
+import {
+  RequestApprove,
+  RequestApproveSchema,
+} from './schema/request-aprrove.schema';
 import { Section, SectionSchema } from './schema/section.schema';
 import { SectionController } from './section.controller';
 import { SectionService } from './section.service';
@@ -25,6 +29,7 @@ import { SectionService } from './section.service';
       { name: Section.name, schema: SectionSchema },
       { name: Lesson.name, schema: LessonSchema },
       { name: Enroll.name, schema: EnrollSchema },
+      { name: RequestApprove.name, schema: RequestApproveSchema },
     ]),
     forwardRef(() => QuestionModule),
     UserModule,

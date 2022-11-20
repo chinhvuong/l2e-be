@@ -11,6 +11,7 @@ import { SeedModule } from './seed/seed.module';
 import { QuestionModule } from './question/question.module';
 import { CrawlerModule } from './crawler/crawler.module';
 import { BlockModule } from './block/block.module';
+import { RatingModule } from './rating/rating.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { BlockModule } from './block/block.module';
     BlockModule,
     CrawlerModule,
     BlockModule,
+    RatingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
