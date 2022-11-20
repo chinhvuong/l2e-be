@@ -19,6 +19,9 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { CourseIdDto } from './dto/course-id.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { CourseFindAllDto } from './dto/course-find-all.dto';
+import { RequestApproveDto } from './dto/request-approve.dto';
+import { ApproveFindAllDto } from './dto/approve-request-find-all.dto';
+import { SupperAdmin } from '@/auth/strategies/supper-admin.guard';
 
 @ApiTags('course')
 @Controller('course')
@@ -27,7 +30,7 @@ export class CourseController {
 
   @Get()
   async findAll(@Query() data: CourseFindAllDto) {
-    return this.courseService.findAll(data);
+    return this.courseService.getCourseList(data);
   }
 
   @ApiBearerAuth()
@@ -38,6 +41,13 @@ export class CourseController {
     @Body() data: CreateCourseDto,
   ) {
     return this.courseService.createNewCourse(user, data);
+  }
+
+  @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  @Get('preview/:id')
+  async coursePreview(@Param() data: CourseIdDto) {
+    return this.courseService.getCoursePreview(data);
   }
 
   @ApiBearerAuth()
@@ -58,17 +68,47 @@ export class CourseController {
     @Query() query: CourseFindAllDto,
     @CurrentUser() user: UserDocument,
   ) {
-    return this.courseService.ownCourses(query, user.walletAddress);
+    return await this.courseService.ownCourses(query, user.walletAddress);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, SupperAdmin)
+  @Get('manage/my-approve-requests')
+  async getMyPastApproveRequests(
+    @Query() query: ApproveFindAllDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return await this.courseService.getMyPastRequest(user, query);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('admin/approve-requests')
+  async getApproveRequests(@Query() query: ApproveFindAllDto) {
+    return await this.courseService.getApproveRequests(query);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('manage/own-courses/:id')
   async courseDetailToEdit(
-    @Query() { id }: CourseIdDto,
+    @Param() { id }: CourseIdDto,
     @CurrentUser() user: UserDocument,
   ) {
-    return this.courseService.getCourseDetailToEdit(id, user.walletAddress);
+    return await this.courseService.getCourseDetailToEdit(
+      id,
+      user.walletAddress,
+    );
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('manage/own-courses/send-approve-request')
+  async requestApprove(
+    @Body() data: RequestApproveDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return await this.courseService.requestApprove(data, user);
   }
 
   // admin

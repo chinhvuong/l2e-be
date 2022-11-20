@@ -18,12 +18,20 @@ import { UserService } from '@/user/user.service';
 import { CourseIdDto } from './dto/course-id.dto';
 import { Web3Service } from '@/web3/web3.service';
 import { ConfigService } from '@nestjs/config';
+import {
+  RequestApprove,
+  RequestApproveDocument,
+} from './schema/request-aprrove.schema';
+import { RequestApproveDto } from './dto/request-approve.dto';
+import { ApproveFindAllDto } from './dto/approve-request-find-all.dto';
 
 @Injectable()
 export class CourseService {
   constructor(
     @InjectModel(Course.name) private model: Model<CourseDocument>,
     @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>,
+    @InjectModel(RequestApprove.name)
+    private requestApproveModel: Model<RequestApproveDocument>,
     private readonly categoryService: CategoryService,
     private readonly userService: UserService,
     private readonly web3Service: Web3Service,
@@ -171,7 +179,102 @@ export class CourseService {
     };
   }
 
+  /// APPROVE REQUEST
+  //CLIENT
+  async requestApprove(data: RequestApproveDto, user: User) {
+    const course = await this.validateOwner(data.id, user.walletAddress);
+    const existRequest = await this.requestApproveModel.findOne({
+      courseId: course._id,
+      createdAt: {
+        $gte: new Date(
+          Date.now() -
+            Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
+        ),
+      },
+    });
+    if (existRequest) {
+      throw new HttpException(
+        {
+          message: 'You have send a request before',
+          timeCanSendNewRequest:
+            existRequest['createdAt']?.getTime() +
+            Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return await new this.requestApproveModel({
+      ...data,
+      courseId: course._id,
+    }).save();
+  }
+
+  async getMyPastRequest(user: User, filter: ApproveFindAllDto) {
+    const match: any = {};
+    if (filter.courseId) {
+      match.courseId = new ObjectId(filter.courseId);
+    } else {
+      const courses = await this.model.find(
+        { owner: { $regex: new RegExp(`${user.walletAddress}`, 'i') } },
+        { _id: 1 },
+      );
+      match.courseId = { $in: courses.map((c) => c._id) };
+    }
+    if (filter.status) {
+      match.status = filter.status;
+    }
+
+    const pagination: any[] = [];
+    if (filter.page !== undefined && filter.limit !== undefined) {
+      pagination.push({
+        $skip: filter.limit * filter.page,
+      });
+    }
+    if (filter.limit !== undefined) {
+      pagination.push({
+        $limit: filter.limit,
+      });
+    }
+  }
+
   // admin
+  //admin
+  async getApproveRequests(filter: ApproveFindAllDto) {
+    const match: any = {};
+    if (filter.courseId) {
+      match.courseId = new ObjectId(filter.courseId);
+    }
+    if (filter.status) {
+      match.status = filter.status;
+    }
+
+    const pagination: any[] = [];
+    if (filter.page !== undefined && filter.limit !== undefined) {
+      pagination.push({
+        $skip: filter.limit * filter.page,
+      });
+    }
+    if (filter.limit !== undefined) {
+      pagination.push({
+        $limit: filter.limit,
+      });
+    }
+
+    const rs = await this.requestApproveModel.aggregate([
+      { $match: match },
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: pagination,
+        },
+      },
+    ]);
+    return {
+      total: rs[0]?.metadata[0] ? rs[0]?.metadata[0].total : 0,
+      data: rs[0] ? rs[0].data : [],
+    };
+  }
+
   async unApprovedCourses(data: CourseFindAllDto) {
     const match: { [key: string]: any } = {
       approved: false,
@@ -228,6 +331,8 @@ export class CourseService {
       await this.userService.findOneOrCreate(student),
     ]);
     if (user && course) {
+      course.students = course.students + 1;
+      await course.save();
       return await new this.enrollModel({
         courseId: course._id,
         userId: user._id,
@@ -265,6 +370,106 @@ export class CourseService {
 
   async getCourseDetailToEdit(courseId: string, owner: string) {
     const course = await this.validateOwner(courseId, owner);
+
+    return course;
+  }
+
+  async getCourseList(data: CourseFindAllDto) {
+    const match: { [key: string]: any } = {
+      approved: true,
+      courseId: { $gte: 1 },
+    };
+
+    if (data.query) {
+      match.name = new RegExp(data.query, 'i');
+    }
+
+    if (data.category) {
+      match.category = new ObjectId(data.category);
+    }
+
+    const pagination: any[] = [];
+    if (data.page !== undefined && data.limit !== undefined) {
+      pagination.push({
+        $skip: data.limit * data.page,
+      });
+    }
+    if (data.limit !== undefined) {
+      pagination.push({
+        $limit: data.limit,
+      });
+    }
+
+    const rs = await this.model.aggregate([
+      { $match: match },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: 'walletAddress',
+          as: 'authors',
+        },
+      },
+      {
+        $lookup: {
+          from: 'ratings',
+          localField: '_id',
+          foreignField: 'courseId',
+          as: 'ratings',
+        },
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: '_category',
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          courseId: 1,
+          rating: 1,
+          author: { $arrayElemAt: ['$authors', 0] },
+          category: { $arrayElemAt: ['$_category', 0] },
+          students: 1,
+          price: 1,
+          ratingCount: { $size: '$ratings' },
+        },
+      },
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: pagination,
+        },
+      },
+    ]);
+    return {
+      total: rs[0]?.metadata[0] ? rs[0]?.metadata[0].total : 0,
+      data: rs[0] ? rs[0].data : [],
+    };
+  }
+
+  async getCoursePreview({ id }: CourseIdDto) {
+    const match = {
+      approved: true,
+      courseId: { $gte: 1 },
+      _id: new ObjectId(id),
+    };
+    const [course] = await this.model.aggregate([
+      {
+        $match: match,
+      },
+      {
+        $lookup: {
+          from: 'sections',
+          localField: '_id',
+          foreignField: 'courseId',
+          as: 'sections',
+        },
+      },
+    ]);
 
     return course;
   }

@@ -14,3 +14,9 @@ export enum lessonMode {
   STUDENTS = 'STUDENTS',
   ONLY_OWNER = 'ONLY_OWNER',
 }
+
+export enum ApproveRequestStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+}
