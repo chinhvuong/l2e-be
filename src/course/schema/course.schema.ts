@@ -11,7 +11,7 @@ export type CourseDocument = Course & Document;
 })
 export class Course {
   @Prop({ index: true, unique: true, sparse: true })
-  course_id: number;
+  courseId: number;
 
   @Prop({ nullable: false })
   owner: string;

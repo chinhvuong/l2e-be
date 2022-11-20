@@ -9,6 +9,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CourseModule } from './course/course.module';
 import { SeedModule } from './seed/seed.module';
 import { QuestionModule } from './question/question.module';
+import { CrawlerModule } from './crawler/crawler.module';
+import { BlockModule } from './block/block.module';
 
 @Module({
   imports: [
@@ -21,6 +23,10 @@ import { QuestionModule } from './question/question.module';
     CourseModule,
     SeedModule,
     QuestionModule,
+    CrawlerModule,
+    BlockModule,
+    CrawlerModule,
+    BlockModule,
   ],
   controllers: [AppController],
   providers: [AppService],
