@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document, ObjectId } from 'mongoose';
 import { Course } from './course.schema';
 export type SectionDocument = Section & Document;
 
@@ -7,7 +7,7 @@ export type SectionDocument = Section & Document;
   timestamps: true,
 })
 export class Section {
-  @Prop({ default: null })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Course' })
   courseId: Course;
 
   @Prop({ default: null })
@@ -15,6 +15,9 @@ export class Section {
 
   @Prop({ default: null })
   description: string;
+
+  @Prop({})
+  order: number;
 }
 
 export const SectionSchema = SchemaFactory.createForClass(Section);

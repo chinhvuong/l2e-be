@@ -37,6 +37,7 @@ export class SectionService {
 
     const rs = await this.model.aggregate([
       { $match: match },
+      { $sort: { order: 1 } },
       {
         $facet: {
           metadata: [{ $count: 'total' }],
@@ -87,10 +88,7 @@ export class SectionService {
       _id: new ObjectId(id),
     });
     if (!section) {
-      throw new HttpException(
-        'Question does not exist',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Section does not exist', HttpStatus.BAD_REQUEST);
     }
     await this.courseService.validateOwner(id, user.walletAddress);
 
@@ -101,6 +99,51 @@ export class SectionService {
       data,
       { new: true },
     );
+  }
+
+  async upsertListSections(
+    user: UserDocument,
+    data: UpdateSectionDto[],
+    courseId: string,
+  ) {
+    const course = await this.courseService.validateOwner(
+      courseId,
+      user.walletAddress,
+    );
+    const rs = await Promise.all(
+      data.map((section, index) => {
+        const filter = {
+          _id: new ObjectId(section._id),
+          courseId: course._id,
+        };
+
+        if (section._id) {
+          return this.model.findOneAndUpdate(
+            filter,
+            {
+              name: section.name,
+              description: section.description,
+              order: index,
+            },
+            {
+              new: true,
+            },
+          );
+        } else {
+          return new this.model({
+            ...section,
+            order: index,
+            courseId: course._id,
+          }).save();
+        }
+      }),
+    );
+
+    await this.model.deleteMany({
+      courseId: course._id,
+      _id: { $nin: rs.map((item) => item?._id) },
+    });
+    return rs;
   }
 
   async getSectionOrThrowError(sectionId: string) {

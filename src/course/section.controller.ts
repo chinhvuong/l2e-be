@@ -18,11 +18,23 @@ import { SectionFindAllDto } from './dto/section-find-all.dto';
 import { CreateSectionDto } from './dto/create-section.dto';
 import { UpdateSectionDto } from './dto/update-section.dto';
 import { SectionIdDto } from './dto/section-id.dto';
+import { CourseIdDto } from './dto/course-id.dto';
 
 @ApiTags('section')
 @Controller('section')
 export class SectionController {
   constructor(private readonly sectionService: SectionService) {}
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('upsert-sections/:id')
+  async upsertSections(
+    @CurrentUser() user: UserDocument,
+    @Body() data: UpdateSectionDto[],
+    @Param() { id }: CourseIdDto,
+  ) {
+    return await this.sectionService.upsertListSections(user, data, id);
+  }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
