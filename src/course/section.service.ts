@@ -18,11 +18,14 @@ export class SectionService {
 
   async manageGetSections(user: UserDocument, data: SectionFindAllDto) {
     await this.courseService.validateOwner(data.courseId, user.walletAddress);
-    const match: { [key: string]: any } = {};
+    const match: { [key: string]: any } = {
+      courseId: new ObjectId(data.courseId),
+    };
 
     if (data.query) {
       match.name = new RegExp(data.query, 'i');
     }
+
     const pagination: any[] = [];
     if (data.page !== undefined && data.limit !== undefined) {
       pagination.push({
