@@ -115,12 +115,11 @@ export class SectionService {
     );
     const rs = await Promise.all(
       data.map((section, index) => {
-        const filter = {
-          _id: new ObjectId(section._id),
-          courseId: course._id,
-        };
-
         if (section._id) {
+          const filter = {
+            _id: new ObjectId(section._id),
+            courseId: course._id,
+          };
           return this.model.findOneAndUpdate(
             filter,
             {
