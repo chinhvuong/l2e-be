@@ -136,4 +136,53 @@ export class LessonService {
       { new: true },
     );
   }
+
+  async upsertLessons(
+    user: UserDocument,
+    data: UpdateLessonDto[],
+    sectionId: string,
+  ) {
+    if (!data.length) {
+      throw new HttpException('Data is empty', HttpStatus.BAD_REQUEST);
+    }
+    const section = await this.sectionService.getSectionOrThrowError(sectionId);
+    await this.courseService.validateOwner(
+      section.courseId.toString(),
+      user.walletAddress,
+    );
+
+    const rs = await Promise.all(
+      data.map((lesson, index) => {
+        if (lesson._id) {
+          const filter = {
+            _id: new ObjectId(lesson._id),
+            sectionId: section._id,
+          };
+          const { _id, ...data } = lesson;
+          return this.model.findOneAndUpdate(
+            filter,
+            {
+              ...data,
+              order: index,
+            },
+            {
+              new: true,
+            },
+          );
+        } else {
+          return new this.model({
+            ...lesson,
+            order: index,
+            sectionId: section._id,
+          }).save();
+        }
+      }),
+    );
+
+    await this.model.deleteMany({
+      sectionId: section._id,
+      _id: { $nin: rs.map((item) => item?._id) },
+    });
+    return rs;
+  }
 }

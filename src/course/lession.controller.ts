@@ -26,6 +26,17 @@ export class LessonController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @Post('upsert-lesions/:id')
+  async upsertSections(
+    @CurrentUser() user: UserDocument,
+    @Body() data: UpdateLessonDto[],
+    @Param() { id }: LessonIdDto,
+  ) {
+    return await this.lessonService.upsertLessons(user, data, id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   async createSection(
     @CurrentUser() user: UserDocument,

@@ -29,6 +29,9 @@ export class Lesson {
 
   @Prop({ default: lessonMode.ONLY_OWNER })
   mode: lessonMode;
+
+  @Prop({})
+  order: number;
 }
 
 export const LessonSchema = SchemaFactory.createForClass(Lesson);
