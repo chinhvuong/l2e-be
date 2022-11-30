@@ -152,6 +152,11 @@ export class CourseService {
     if (data.query) {
       match.name = new RegExp(data.query, 'i');
     }
+
+    if (data.category) {
+      match.category = new ObjectId(data.category);
+    }
+
     const pagination: any[] = [];
     if (data.page !== undefined && data.limit !== undefined) {
       pagination.push({
@@ -166,6 +171,42 @@ export class CourseService {
 
     const rs = await this.model.aggregate([
       { $match: match },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: 'walletAddress',
+          as: 'authors',
+        },
+      },
+      {
+        $lookup: {
+          from: 'ratings',
+          localField: '_id',
+          foreignField: 'courseId',
+          as: 'ratings',
+        },
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: '_category',
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          courseId: 1,
+          rating: 1,
+          author: { $arrayElemAt: ['$authors', 0] },
+          category: { $arrayElemAt: ['$_category', 0] },
+          students: 1,
+          price: 1,
+          ratingCount: { $size: '$ratings' },
+        },
+      },
       {
         $facet: {
           metadata: [{ $count: 'total' }],
