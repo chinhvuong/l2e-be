@@ -205,6 +205,7 @@ export class CourseService {
           students: 1,
           price: 1,
           ratingCount: { $size: '$ratings' },
+          approved: 1,
         },
       },
       {
