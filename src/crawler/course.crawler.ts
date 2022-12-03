@@ -18,7 +18,7 @@ class CourseCrawler extends BaseCrawler {
     startBlock: number,
     name: string,
     gapTime = 60000,
-    maxBlockRange = 300,
+    maxBlockRange = 500,
   ) {
     super(
       provider,
