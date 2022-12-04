@@ -505,10 +505,57 @@ export class CourseService {
       },
       {
         $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: 'walletAddress',
+          as: 'authors',
+        },
+      },
+      {
+        $lookup: {
+          from: 'ratings',
+          localField: '_id',
+          foreignField: 'courseId',
+          as: 'ratings',
+        },
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: '_category',
+        },
+      },
+      {
+        $lookup: {
           from: 'sections',
           localField: '_id',
           foreignField: 'courseId',
           as: 'sections',
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          description: 1,
+          overview: 1,
+          courseId: 1,
+          rating: 1,
+          includes: 1,
+          goals: 1,
+          thumbnail: 1,
+          requirements: 1,
+          approved: 1,
+          reviews: 1,
+          author: { $arrayElemAt: ['$authors', 0] },
+          category: { $arrayElemAt: ['$_category', 0] },
+          students: 1,
+          price: 1,
+          ratingCount: { $size: '$ratings' },
+          sections: 1,
+          createdAt: 1,
+          updatedAt: 1,
         },
       },
     ]);
