@@ -44,6 +44,16 @@ export class CourseController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('check-enroll/:id')
+  async checkEnrollStatus(
+    @CurrentUser() user: UserDocument,
+    @Param() { id }: CourseIdDto,
+  ) {
+    return this.courseService.checkEnroll(user._id.toString(), id);
+  }
+
+  @ApiBearerAuth()
   // @UseGuards(JwtAuthGuard)
   @Get('preview/:id')
   async coursePreview(@Param() data: CourseIdDto) {

@@ -644,6 +644,7 @@ export class CourseService {
           requirements: 1,
           approved: 1,
           reviews: 1,
+          include: 1,
           author: { $arrayElemAt: ['$authors', 0] },
           category: { $arrayElemAt: ['$_category', 0] },
           students: 1,
@@ -657,5 +658,15 @@ export class CourseService {
     ]);
 
     return course;
+  }
+
+  async checkEnroll(userId: string, courseId: string) {
+    const enroll = await this.enrollModel.count({
+      userId: new ObjectId(userId),
+      courseId: new ObjectId(courseId),
+    });
+    return {
+      enroll: enroll > 0,
+    };
   }
 }
