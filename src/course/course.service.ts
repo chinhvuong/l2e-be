@@ -221,6 +221,102 @@ export class CourseService {
     };
   }
 
+  async myEnrollCourses(data: CourseFindAllDto, userId: string) {
+    console.log(
+      '🚀 ~ file: course.service.ts:225 ~ CourseService ~ myEnrollCourses ~ userId',
+      userId,
+    );
+    const myEnrolls = await this.enrollModel.find({
+      userId: new ObjectId(userId),
+    });
+    console.log(
+      '🚀 ~ file: course.service.ts:228 ~ CourseService ~ myEnrollCourses ~ myEnrolls',
+      myEnrolls,
+    );
+    if (myEnrolls.length === 0) {
+      return {
+        total: 0,
+        data: [],
+      };
+    }
+    const match: { [key: string]: any } = {
+      _id: {
+        $in: myEnrolls.map((e) => e.courseId),
+      },
+    };
+
+    if (data.query) {
+      match.name = new RegExp(data.query, 'i');
+    }
+
+    if (data.category) {
+      match.category = new ObjectId(data.category);
+    }
+
+    const pagination: any[] = [];
+    if (data.page !== undefined && data.limit !== undefined) {
+      pagination.push({
+        $skip: data.limit * data.page,
+      });
+    }
+    if (data.limit !== undefined) {
+      pagination.push({
+        $limit: data.limit,
+      });
+    }
+
+    const rs = await this.model.aggregate([
+      { $match: match },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: 'walletAddress',
+          as: 'authors',
+        },
+      },
+      {
+        $lookup: {
+          from: 'ratings',
+          localField: '_id',
+          foreignField: 'courseId',
+          as: 'ratings',
+        },
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: '_category',
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          courseId: 1,
+          rating: 1,
+          author: { $arrayElemAt: ['$authors', 0] },
+          category: { $arrayElemAt: ['$_category', 0] },
+          students: 1,
+          price: 1,
+          ratingCount: { $size: '$ratings' },
+          approved: 1,
+        },
+      },
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: pagination,
+        },
+      },
+    ]);
+    return {
+      total: rs[0]?.metadata[0] ? rs[0]?.metadata[0].total : 0,
+      data: rs[0] ? rs[0].data : [],
+    };
+  }
+
   /// APPROVE REQUEST
   //CLIENT
   async requestApprove(data: RequestApproveDto, user: User) {

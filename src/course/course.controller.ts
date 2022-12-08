@@ -49,6 +49,15 @@ export class CourseController {
   async coursePreview(@Param() data: CourseIdDto) {
     return this.courseService.getCoursePreview(data);
   }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('my/enroll-courses')
+  async myEnrollCourses(
+    @Query() query: CourseFindAllDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return await this.courseService.myEnrollCourses(query, user._id);
+  }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
