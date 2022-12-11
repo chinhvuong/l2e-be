@@ -18,9 +18,13 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
   // Global Validation Custom
-  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
-
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
   app.enableCors();
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3004);
 }
 bootstrap();
