@@ -35,7 +35,9 @@ export class LessonService {
       section.courseId.toString(),
       user.walletAddress,
     );
-    const match: { [key: string]: any } = {};
+    const match: { [key: string]: any } = {
+      sectionId: new ObjectId(data.sectionId),
+    };
 
     if (data.query) {
       match.name = new RegExp(data.query, 'i');
