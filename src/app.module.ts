@@ -12,6 +12,7 @@ import { QuestionModule } from './question/question.module';
 import { CrawlerModule } from './crawler/crawler.module';
 import { BlockModule } from './block/block.module';
 import { RatingModule } from './rating/rating.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RatingModule } from './rating/rating.module';
     CrawlerModule,
     BlockModule,
     RatingModule,
+    S3Module,
   ],
   controllers: [AppController],
   providers: [AppService],
