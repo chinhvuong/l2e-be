@@ -15,6 +15,8 @@ phases:
       - echo COMMIT_HASH $COMMIT_HASH
       - echo REPOSITORY_URI $REPOSITORY_URI
       - echo IMAGE_TAG $IMAGE_TAG
+      - aws ssm get-parameter --name l2e-be-dev --region ap-southeast-1 | jq '.Parameter.Value' |  sed 's/^"\(.*\)/\1/' | sed 's/.$//' | sed 's/\\n/\n/g'> .env
+      - cat .env
   build:
     commands:
       - echo Build started on `date`
