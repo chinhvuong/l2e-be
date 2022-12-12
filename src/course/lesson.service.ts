@@ -56,6 +56,7 @@ export class LessonService {
 
     const rs = await this.model.aggregate([
       { $match: match },
+      { $sort: { order: 1 } },
       {
         $facet: {
           metadata: [{ $count: 'total' }],
