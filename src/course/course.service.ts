@@ -24,11 +24,13 @@ import {
 } from './schema/request-aprrove.schema';
 import { RequestApproveDto } from './dto/request-approve.dto';
 import { ApproveFindAllDto } from './dto/approve-request-find-all.dto';
+import { Section, SectionDocument } from './schema/section.schema';
 
 @Injectable()
 export class CourseService {
   constructor(
     @InjectModel(Course.name) private model: Model<CourseDocument>,
+    @InjectModel(Section.name) private sectionModel: Model<SectionDocument>,
     @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>,
     @InjectModel(RequestApprove.name)
     private requestApproveModel: Model<RequestApproveDocument>,
@@ -508,8 +510,31 @@ export class CourseService {
 
   async getCourseDetailToEdit(courseId: string, owner: string) {
     const course = await this.validateOwner(courseId, owner);
+    const sections = await this.sectionModel.aggregate([
+      {
+        $match: {
+          courseId: new ObjectId(courseId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'lessons',
+          localField: '_id',
+          foreignField: 'sectionId',
+          as: 'lessons',
+        },
+      },
+      {
+        $sort: {
+          order: 1,
+        },
+      },
+    ]);
 
-    return course;
+    return {
+      ...course['_doc'],
+      sections,
+    };
   }
 
   async getCourseList(data: CourseFindAllDto) {
@@ -623,14 +648,14 @@ export class CourseService {
           as: '_category',
         },
       },
-      {
-        $lookup: {
-          from: 'sections',
-          localField: '_id',
-          foreignField: 'courseId',
-          as: 'sections',
-        },
-      },
+      // {
+      //   $lookup: {
+      //     from: 'sections',
+      //     localField: '_id',
+      //     foreignField: 'courseId',
+      //     as: 'sections',
+      //   },
+      // },
       {
         $project: {
           name: 1,
@@ -657,6 +682,40 @@ export class CourseService {
       },
     ]);
 
+    const sections = await this.sectionModel.aggregate([
+      {
+        $match: {
+          courseId: new ObjectId(id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'lessons',
+          localField: '_id',
+          foreignField: 'sectionId',
+          as: 'lessons',
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          description: 1,
+          order: 1,
+          lessons: {
+            name: 1,
+            description: 1,
+            mediaType: 1,
+          },
+        },
+      },
+      {
+        $sort: {
+          order: 1,
+        },
+      },
+    ]);
+    // console.log("🚀 ~ file: course.service.ts:665 ~ CourseService ~ getCoursePreview ~ sections", sections)
+    course['sections'] = sections;
     return course;
   }
 
