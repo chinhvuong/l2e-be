@@ -13,8 +13,7 @@ let SupperAdmin = class SupperAdmin {
         var _a;
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        return ((user === null || user === void 0 ? void 0 : user.walletAddress.toLowerCase()) ===
-            ((_a = process.env.ADMIN_ADDRESS) === null || _a === void 0 ? void 0 : _a.toLowerCase()));
+        return Boolean((_a = process.env.ADMIN_ADDRESS) === null || _a === void 0 ? void 0 : _a.toLowerCase().split(' ').includes(user === null || user === void 0 ? void 0 : user.walletAddress.toLowerCase()));
     }
 };
 SupperAdmin = __decorate([

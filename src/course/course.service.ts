@@ -328,7 +328,7 @@ export class CourseService {
       createdAt: {
         $gte: new Date(
           Date.now() -
-            Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
+          Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
         ),
       },
     });
@@ -375,91 +375,6 @@ export class CourseService {
         $limit: filter.limit,
       });
     }
-  }
-
-  // admin
-  //admin
-  async getApproveRequests(filter: ApproveFindAllDto) {
-    const match: any = {};
-    if (filter.courseId) {
-      match.courseId = new ObjectId(filter.courseId);
-    }
-    if (filter.status) {
-      match.status = filter.status;
-    }
-
-    const pagination: any[] = [];
-    if (filter.page !== undefined && filter.limit !== undefined) {
-      pagination.push({
-        $skip: filter.limit * filter.page,
-      });
-    }
-    if (filter.limit !== undefined) {
-      pagination.push({
-        $limit: filter.limit,
-      });
-    }
-
-    const rs = await this.requestApproveModel.aggregate([
-      { $match: match },
-      {
-        $facet: {
-          metadata: [{ $count: 'total' }],
-          data: pagination,
-        },
-      },
-    ]);
-    return {
-      total: rs[0]?.metadata[0] ? rs[0]?.metadata[0].total : 0,
-      data: rs[0] ? rs[0].data : [],
-    };
-  }
-
-  async unApprovedCourses(data: CourseFindAllDto) {
-    const match: { [key: string]: any } = {
-      approved: false,
-    };
-
-    if (data.query) {
-      match.name = new RegExp(data.query, 'i');
-    }
-    const pagination: any[] = [];
-    if (data.page !== undefined && data.limit !== undefined) {
-      pagination.push({
-        $skip: data.limit * data.page,
-      });
-    }
-    if (data.limit !== undefined) {
-      pagination.push({
-        $limit: data.limit,
-      });
-    }
-
-    const rs = await this.model.aggregate([
-      { $match: match },
-      {
-        $facet: {
-          metadata: [{ $count: 'total' }],
-          data: pagination,
-        },
-      },
-    ]);
-    return {
-      total: rs[0]?.metadata[0] ? rs[0]?.metadata[0].total : 0,
-      data: rs[0] ? rs[0].data : [],
-    };
-  }
-
-  async toggleApproveCourse(id: string) {
-    const course = await this.model.findOne({
-      _id: new ObjectId(id),
-    });
-
-    if (!course) {
-      throw new NotFoundException();
-    }
-    course.approved = !course.approved;
-    return await course.save();
   }
 
   // enroll

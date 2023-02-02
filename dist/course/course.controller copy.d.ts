@@ -32,8 +32,19 @@ export declare class CourseController {
         data: any;
     }>;
     getMyPastApproveRequests(query: ApproveFindAllDto, user: UserDocument): Promise<void>;
+    getApproveRequests(query: ApproveFindAllDto): Promise<{
+        total: any;
+        data: any;
+    }>;
     courseDetailToEdit({ id }: CourseIdDto, user: UserDocument): Promise<any>;
     requestApprove(data: RequestApproveDto, user: UserDocument): Promise<import("./schema/request-aprrove.schema").RequestApprove & import("mongoose").Document<any, any, any> & {
+        _id: import("mongoose").Types.ObjectId;
+    }>;
+    unApproveCourses(query: CourseFindAllDto, user: UserDocument): Promise<{
+        total: any;
+        data: any;
+    }>;
+    approveCourse({ id }: CourseIdDto, user: UserDocument): Promise<import("./schema/course.schema").Course & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     }>;
     requestSignatureToMint({ id }: CourseIdDto, user: UserDocument): Promise<{

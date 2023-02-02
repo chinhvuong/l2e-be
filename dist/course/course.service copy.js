@@ -349,6 +349,105 @@ let CourseService = class CourseService {
             }
         });
     }
+    getApproveRequests(filter) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            const match = {};
+            if (filter.courseId) {
+                match.courseId = new mongodb_1.ObjectId(filter.courseId);
+            }
+            if (filter.status) {
+                match.status = filter.status;
+            }
+            const pagination = [];
+            if (filter.page !== undefined && filter.limit !== undefined) {
+                pagination.push({
+                    $skip: filter.limit * filter.page,
+                });
+            }
+            if (filter.limit !== undefined) {
+                pagination.push({
+                    $limit: filter.limit,
+                });
+            }
+            const rs = yield this.requestApproveModel.aggregate([
+                { $match: match },
+                {
+                    $lookup: {
+                        from: "courses",
+                        localField: "courseId",
+                        foreignField: "_id",
+                        as: "course"
+                    }
+                },
+                {
+                    $project: {
+                        courseId: 1,
+                        createdAt: 1,
+                        status: 1,
+                        course: { $arrayElemAt: ["$course", 0] }
+                    }
+                },
+                {
+                    $facet: {
+                        metadata: [{ $count: 'total' }],
+                        data: pagination,
+                    },
+                },
+            ]);
+            return {
+                total: ((_a = rs[0]) === null || _a === void 0 ? void 0 : _a.metadata[0]) ? (_b = rs[0]) === null || _b === void 0 ? void 0 : _b.metadata[0].total : 0,
+                data: rs[0] ? rs[0].data : [],
+            };
+        });
+    }
+    unApprovedCourses(data) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            const match = {
+                approved: false,
+            };
+            if (data.query) {
+                match.name = new RegExp(data.query, 'i');
+            }
+            const pagination = [];
+            if (data.page !== undefined && data.limit !== undefined) {
+                pagination.push({
+                    $skip: data.limit * data.page,
+                });
+            }
+            if (data.limit !== undefined) {
+                pagination.push({
+                    $limit: data.limit,
+                });
+            }
+            const rs = yield this.model.aggregate([
+                { $match: match },
+                {
+                    $facet: {
+                        metadata: [{ $count: 'total' }],
+                        data: pagination,
+                    },
+                },
+            ]);
+            return {
+                total: ((_a = rs[0]) === null || _a === void 0 ? void 0 : _a.metadata[0]) ? (_b = rs[0]) === null || _b === void 0 ? void 0 : _b.metadata[0].total : 0,
+                data: rs[0] ? rs[0].data : [],
+            };
+        });
+    }
+    toggleApproveCourse(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const course = yield this.model.findOne({
+                _id: new mongodb_1.ObjectId(id),
+            });
+            if (!course) {
+                throw new common_1.NotFoundException();
+            }
+            course.approved = !course.approved;
+            return yield course.save();
+        });
+    }
     enrollCourse(student, courseId) {
         return __awaiter(this, void 0, void 0, function* () {
             const [course, user] = yield Promise.all([
@@ -612,4 +711,4 @@ CourseService = __decorate([
         config_1.ConfigService])
 ], CourseService);
 exports.CourseService = CourseService;
-//# sourceMappingURL=course.service.js.map
+//# sourceMappingURL=course.service%20copy.js.map

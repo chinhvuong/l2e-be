@@ -8,7 +8,7 @@ export type RequestApproveDocument = RequestApprove & Document;
   timestamps: true,
 })
 export class RequestApprove {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Course' })
   courseId: Course;
 
   @Prop({ default: [] })

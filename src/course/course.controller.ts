@@ -21,7 +21,6 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { CourseFindAllDto } from './dto/course-find-all.dto';
 import { RequestApproveDto } from './dto/request-approve.dto';
 import { ApproveFindAllDto } from './dto/approve-request-find-all.dto';
-import { SupperAdmin } from '@/auth/strategies/supper-admin.guard';
 
 @ApiTags('course')
 @Controller('course')
@@ -91,20 +90,13 @@ export class CourseController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, SupperAdmin)
+  @UseGuards(JwtAuthGuard)
   @Get('manage/my-approve-requests')
   async getMyPastApproveRequests(
     @Query() query: ApproveFindAllDto,
     @CurrentUser() user: UserDocument,
   ) {
     return await this.courseService.getMyPastRequest(user, query);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get('admin/approve-requests')
-  async getApproveRequests(@Query() query: ApproveFindAllDto) {
-    return await this.courseService.getApproveRequests(query);
   }
 
   @ApiBearerAuth()
@@ -130,41 +122,6 @@ export class CourseController {
     return await this.courseService.requestApprove(data, user);
   }
 
-  // admin
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get('admin/unapproved-courses')
-  async unApproveCourses(
-    @Query() query: CourseFindAllDto,
-    @CurrentUser() user: UserDocument,
-  ) {
-    if (
-      user.walletAddress.toLowerCase() ===
-      process.env.ADMIN_ADDRESS?.toLowerCase()
-    ) {
-      return this.courseService.unApprovedCourses(query);
-    } else {
-      throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
-    }
-  }
-
-  // admin
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Put('admin/toggle-approve-course')
-  async approveCourse(
-    @Body() { id }: CourseIdDto,
-    @CurrentUser() user: UserDocument,
-  ) {
-    if (
-      user.walletAddress.toLowerCase() ===
-      process.env.ADMIN_ADDRESS?.toLowerCase()
-    ) {
-      return this.courseService.toggleApproveCourse(id);
-    } else {
-      throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
-    }
-  }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

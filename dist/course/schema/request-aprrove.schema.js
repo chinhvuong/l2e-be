@@ -20,7 +20,7 @@ const course_schema_1 = require("./course.schema");
 let RequestApprove = class RequestApprove {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.default.Schema.Types.ObjectId, ref: 'Category' }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.default.Schema.Types.ObjectId, ref: 'Course' }),
     __metadata("design:type", course_schema_1.Course)
 ], RequestApprove.prototype, "courseId", void 0);
 __decorate([

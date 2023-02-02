@@ -8,9 +8,6 @@ export class SupperAdmin implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    return (
-      user?.walletAddress.toLowerCase() ===
-      process.env.ADMIN_ADDRESS?.toLowerCase()
-    );
+    return Boolean(process.env.ADMIN_ADDRESS?.toLowerCase().split(' ').includes(user?.walletAddress.toLowerCase()))
   }
 }

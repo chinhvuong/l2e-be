@@ -55,6 +55,17 @@ export declare class CourseService {
         _id: import("mongoose").Types.ObjectId;
     }>;
     getMyPastRequest(user: User, filter: ApproveFindAllDto): Promise<void>;
+    getApproveRequests(filter: ApproveFindAllDto): Promise<{
+        total: any;
+        data: any;
+    }>;
+    unApprovedCourses(data: CourseFindAllDto): Promise<{
+        total: any;
+        data: any;
+    }>;
+    toggleApproveCourse(id: string): Promise<Course & import("mongoose").Document<any, any, any> & {
+        _id: import("mongoose").Types.ObjectId;
+    }>;
     enrollCourse(student: string, courseId: number): Promise<(Enroll & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     }) | undefined>;

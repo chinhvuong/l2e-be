@@ -3,6 +3,8 @@ import { UserModule } from '@/user/user.module';
 import { Web3Module } from '@/web3/web3.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AdminCourseController } from './admin-course.controller';
+import { AdminCourseService } from './admin-course.service';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 import { CourseController } from './course.controller';
@@ -37,11 +39,13 @@ import { SectionService } from './section.service';
   ],
   controllers: [
     CourseController,
+    AdminCourseController,
     CategoryController,
     SectionController,
     LessonController,
+
   ],
-  providers: [CourseService, CategoryService, SectionService, LessonService],
-  exports: [CategoryService, CourseService, SectionService, LessonService],
+  providers: [CourseService, CategoryService, SectionService, LessonService, AdminCourseService],
+  exports: [CategoryService, CourseService, SectionService, LessonService, AdminCourseService],
 })
 export class CourseModule {}

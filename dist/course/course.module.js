@@ -12,6 +12,8 @@ const user_module_1 = require("../user/user.module");
 const web3_module_1 = require("../web3/web3.module");
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const admin_course_controller_1 = require("./admin-course.controller");
+const admin_course_service_1 = require("./admin-course.service");
 const category_controller_1 = require("./category.controller");
 const category_service_1 = require("./category.service");
 const course_controller_1 = require("./course.controller");
@@ -45,12 +47,13 @@ CourseModule = __decorate([
         ],
         controllers: [
             course_controller_1.CourseController,
+            admin_course_controller_1.AdminCourseController,
             category_controller_1.CategoryController,
             section_controller_1.SectionController,
             lession_controller_1.LessonController,
         ],
-        providers: [course_service_1.CourseService, category_service_1.CategoryService, section_service_1.SectionService, lesson_service_1.LessonService],
-        exports: [category_service_1.CategoryService, course_service_1.CourseService, section_service_1.SectionService, lesson_service_1.LessonService],
+        providers: [course_service_1.CourseService, category_service_1.CategoryService, section_service_1.SectionService, lesson_service_1.LessonService, admin_course_service_1.AdminCourseService],
+        exports: [category_service_1.CategoryService, course_service_1.CourseService, section_service_1.SectionService, lesson_service_1.LessonService, admin_course_service_1.AdminCourseService],
     })
 ], CourseModule);
 exports.CourseModule = CourseModule;

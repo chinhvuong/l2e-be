@@ -77,6 +77,11 @@ let CourseController = class CourseController {
             return yield this.courseService.getMyPastRequest(user, query);
         });
     }
+    getApproveRequests(query) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.courseService.getApproveRequests(query);
+        });
+    }
     courseDetailToEdit({ id }, user) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.courseService.getCourseDetailToEdit(id, user.walletAddress);
@@ -85,6 +90,30 @@ let CourseController = class CourseController {
     requestApprove(data, user) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.courseService.requestApprove(data, user);
+        });
+    }
+    unApproveCourses(query, user) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (user.walletAddress.toLowerCase() ===
+                ((_a = process.env.ADMIN_ADDRESS) === null || _a === void 0 ? void 0 : _a.toLowerCase())) {
+                return this.courseService.unApprovedCourses(query);
+            }
+            else {
+                throw new common_1.HttpException('Permission denied', common_1.HttpStatus.FORBIDDEN);
+            }
+        });
+    }
+    approveCourse({ id }, user) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (user.walletAddress.toLowerCase() ===
+                ((_a = process.env.ADMIN_ADDRESS) === null || _a === void 0 ? void 0 : _a.toLowerCase())) {
+                return this.courseService.toggleApproveCourse(id);
+            }
+            else {
+                throw new common_1.HttpException('Permission denied', common_1.HttpStatus.FORBIDDEN);
+            }
         });
     }
     requestSignatureToMint({ id }, user) {
@@ -173,6 +202,15 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('admin/approve-requests'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [approve_request_find_all_dto_1.ApproveFindAllDto]),
+    __metadata("design:returntype", Promise)
+], CourseController.prototype, "getApproveRequests", null);
+__decorate([
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('manage/own-courses/:id'),
     __param(0, (0, common_1.Param)()),
     __param(1, (0, user_decorator_1.CurrentUser)()),
@@ -193,6 +231,26 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('admin/unapproved-courses'),
+    __param(0, (0, common_1.Query)()),
+    __param(1, (0, user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [course_find_all_dto_1.CourseFindAllDto, Object]),
+    __metadata("design:returntype", Promise)
+], CourseController.prototype, "unApproveCourses", null);
+__decorate([
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Put)('admin/toggle-approve-course'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [course_id_dto_1.CourseIdDto, Object]),
+    __metadata("design:returntype", Promise)
+], CourseController.prototype, "approveCourse", null);
+__decorate([
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('request-mint-signature'),
     __param(0, (0, common_1.Query)()),
     __param(1, (0, user_decorator_1.CurrentUser)()),
@@ -206,4 +264,4 @@ CourseController = __decorate([
     __metadata("design:paramtypes", [course_service_1.CourseService])
 ], CourseController);
 exports.CourseController = CourseController;
-//# sourceMappingURL=course.controller.js.map
+//# sourceMappingURL=course.controller%20copy.js.map
