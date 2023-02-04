@@ -32,8 +32,9 @@ let UserController = class UserController {
         this.userService = userService;
     }
     me(user) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            return user;
+            return Object.assign(Object.assign({}, user['_doc']), { isAdmin: Boolean((_a = process.env.ADMIN_ADDRESS) === null || _a === void 0 ? void 0 : _a.split(' ').map(address => address.toLowerCase()).includes(user.walletAddress.toLowerCase())) });
         });
     }
 };

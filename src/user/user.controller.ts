@@ -14,6 +14,9 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async me(@CurrentUser() user: UserDocument) {
-    return user;
+    return {
+      ...user['_doc'],
+      isAdmin: Boolean(process.env.ADMIN_ADDRESS?.split(' ').map(address => address.toLowerCase()).includes(user.walletAddress.toLowerCase()))
+    };
   }
 }
