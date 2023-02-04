@@ -122,7 +122,6 @@ export class CourseController {
     return await this.courseService.requestApprove(data, user);
   }
 
-
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('request-mint-signature')

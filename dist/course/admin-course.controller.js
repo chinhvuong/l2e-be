@@ -60,15 +60,8 @@ let AdminCourseController = class AdminCourseController {
         });
     }
     approveCourse({ id }, user) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            if (user.walletAddress.toLowerCase() ===
-                ((_a = process.env.ADMIN_ADDRESS) === null || _a === void 0 ? void 0 : _a.toLowerCase())) {
-                return this.courseService.toggleApproveCourse(id);
-            }
-            else {
-                throw new common_1.HttpException('Permission denied', common_1.HttpStatus.FORBIDDEN);
-            }
+            return this.courseService.toggleApproveCourse(id);
         });
     }
 };

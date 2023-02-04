@@ -77,15 +77,15 @@ export class AdminCourseService {
   async resolveApproveRequest(id: string, data: ResolveApproveRequestDto) {
     const rs = await this.requestApproveModel.findByIdAndUpdate(
       {
-        _id: new ObjectId(id)
+        _id: new ObjectId(id),
       },
       data,
       {
-        new: true
-      }
-    )
+        new: true,
+      },
+    );
 
-    return rs
+    return rs;
   }
 
   // admin
@@ -115,19 +115,19 @@ export class AdminCourseService {
       { $match: match },
       {
         $lookup: {
-          from: "courses",
-          localField: "courseId",
-          foreignField: "_id",
-          as: "course"
-        }
+          from: 'courses',
+          localField: 'courseId',
+          foreignField: '_id',
+          as: 'course',
+        },
       },
       {
         $project: {
           courseId: 1,
           createdAt: 1,
           status: 1,
-          course: { $arrayElemAt: ["$course", 0] }
-        }
+          course: { $arrayElemAt: ['$course', 0] },
+        },
       },
       {
         $facet: {
@@ -188,5 +188,4 @@ export class AdminCourseService {
     course.approved = !course.approved;
     return await course.save();
   }
-
 }

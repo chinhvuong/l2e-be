@@ -27,7 +27,6 @@ import { ResolveApproveRequestDto } from './dto/resolve-approve-request.dto';
 export class AdminCourseController {
   constructor(private readonly courseService: AdminCourseService) {}
 
-
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, SupperAdmin)
   @Get('approve-requests')
@@ -38,7 +37,10 @@ export class AdminCourseController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, SupperAdmin)
   @Put('approve-requests/resolve/:id')
-  async resolveApproveRequest(@Param() { id }: MongoIdDto, @Body() data: ResolveApproveRequestDto) {
+  async resolveApproveRequest(
+    @Param() { id }: MongoIdDto,
+    @Body() data: ResolveApproveRequestDto,
+  ) {
     return await this.courseService.resolveApproveRequest(id, data);
   }
 
@@ -68,13 +70,6 @@ export class AdminCourseController {
     @Body() { id }: CourseIdDto,
     @CurrentUser() user: UserDocument,
   ) {
-    if (
-      user.walletAddress.toLowerCase() ===
-      process.env.ADMIN_ADDRESS?.toLowerCase()
-    ) {
-      return this.courseService.toggleApproveCourse(id);
-    } else {
-      throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
-    }
+    return this.courseService.toggleApproveCourse(id);
   }
 }

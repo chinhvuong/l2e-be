@@ -328,7 +328,7 @@ export class CourseService {
       createdAt: {
         $gte: new Date(
           Date.now() -
-          Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
+            Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
         ),
       },
     });

@@ -43,9 +43,20 @@ import { SectionService } from './section.service';
     CategoryController,
     SectionController,
     LessonController,
-
   ],
-  providers: [CourseService, CategoryService, SectionService, LessonService, AdminCourseService],
-  exports: [CategoryService, CourseService, SectionService, LessonService, AdminCourseService],
+  providers: [
+    CourseService,
+    CategoryService,
+    SectionService,
+    LessonService,
+    AdminCourseService,
+  ],
+  exports: [
+    CategoryService,
+    CourseService,
+    SectionService,
+    LessonService,
+    AdminCourseService,
+  ],
 })
 export class CourseModule {}
