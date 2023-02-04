@@ -84,9 +84,9 @@ let AdminCourseService = class AdminCourseService {
     resolveApproveRequest(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             const rs = yield this.requestApproveModel.findByIdAndUpdate({
-                _id: new mongodb_1.ObjectId(id)
+                _id: new mongodb_1.ObjectId(id),
             }, data, {
-                new: true
+                new: true,
             });
             return rs;
         });
@@ -116,19 +116,19 @@ let AdminCourseService = class AdminCourseService {
                 { $match: match },
                 {
                     $lookup: {
-                        from: "courses",
-                        localField: "courseId",
-                        foreignField: "_id",
-                        as: "course"
-                    }
+                        from: 'courses',
+                        localField: 'courseId',
+                        foreignField: '_id',
+                        as: 'course',
+                    },
                 },
                 {
                     $project: {
                         courseId: 1,
                         createdAt: 1,
                         status: 1,
-                        course: { $arrayElemAt: ["$course", 0] }
-                    }
+                        course: { $arrayElemAt: ['$course', 0] },
+                    },
                 },
                 {
                     $facet: {

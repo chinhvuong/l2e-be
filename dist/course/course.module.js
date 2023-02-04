@@ -52,8 +52,20 @@ CourseModule = __decorate([
             section_controller_1.SectionController,
             lession_controller_1.LessonController,
         ],
-        providers: [course_service_1.CourseService, category_service_1.CategoryService, section_service_1.SectionService, lesson_service_1.LessonService, admin_course_service_1.AdminCourseService],
-        exports: [category_service_1.CategoryService, course_service_1.CourseService, section_service_1.SectionService, lesson_service_1.LessonService, admin_course_service_1.AdminCourseService],
+        providers: [
+            course_service_1.CourseService,
+            category_service_1.CategoryService,
+            section_service_1.SectionService,
+            lesson_service_1.LessonService,
+            admin_course_service_1.AdminCourseService,
+        ],
+        exports: [
+            category_service_1.CategoryService,
+            course_service_1.CourseService,
+            section_service_1.SectionService,
+            lesson_service_1.LessonService,
+            admin_course_service_1.AdminCourseService,
+        ],
     })
 ], CourseModule);
 exports.CourseModule = CourseModule;

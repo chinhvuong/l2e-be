@@ -81,7 +81,8 @@ __decorate([
     __param(0, (0, common_1.Param)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongo_id_dto_1.MongoIdDto, resolve_approve_request_dto_1.ResolveApproveRequestDto]),
+    __metadata("design:paramtypes", [mongo_id_dto_1.MongoIdDto,
+        resolve_approve_request_dto_1.ResolveApproveRequestDto]),
     __metadata("design:returntype", Promise)
 ], AdminCourseController.prototype, "resolveApproveRequest", null);
 __decorate([
