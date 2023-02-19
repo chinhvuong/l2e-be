@@ -14,6 +14,6 @@ export class AdminUserController {
   @UseGuards(JwtAuthGuard, SupperAdmin)
   @Get('')
   async list(@Query() filter: AdminFindAllUserDto) {
-    return this.userService.findAll(filter)
+    return this.userService.findAll(filter);
   }
 }

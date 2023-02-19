@@ -328,7 +328,7 @@ export class CourseService {
       createdAt: {
         $gte: new Date(
           Date.now() -
-          Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
+            Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
         ),
       },
     });
@@ -478,19 +478,20 @@ export class CourseService {
       });
     }
 
-    const sort: { [key: string]: 1 | -1 } = {}
+    const sort: { [key: string]: 1 | -1 } = {};
     // sort
     if (data?.sort?.length) {
       for (let i = 0; i < data?.sort?.length; i++) {
         const [attr, direction] = data.sort[i].split(':');
         if (direction === '-1') {
-          sort[attr] = -1
+          sort[attr] = -1;
         } else {
-          sort[attr] = 1
+          sort[attr] = 1;
         }
       }
-    } else { // price desc
-      sort.price = -1
+    } else {
+      // price desc
+      sort.price = -1;
     }
 
     const rs = await this.model.aggregate([
@@ -532,7 +533,7 @@ export class CourseService {
         },
       },
       {
-        $sort: sort
+        $sort: sort,
       },
       {
         $facet: {

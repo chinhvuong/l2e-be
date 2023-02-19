@@ -41,8 +41,8 @@ export class AdminCourseService {
     }
     if (data.approved?.length) {
       match.approved = {
-        $in: data.approved
-      }
+        $in: data.approved,
+      };
     }
     const pagination: any[] = [];
     if (data.page !== undefined && data.limit !== undefined) {
@@ -56,8 +56,27 @@ export class AdminCourseService {
       });
     }
 
+    // sort
+    const sort: { [key: string]: 1 | -1 } = {};
+    if (data?.sort?.length) {
+      for (let i = 0; i < data?.sort?.length; i++) {
+        const [attr, direction] = data.sort[i].split(':');
+        if (direction === '-1') {
+          sort[attr] = -1;
+        } else {
+          sort[attr] = 1;
+        }
+      }
+    } else {
+      // price desc
+      sort.price = -1;
+    }
+
     const rs = await this.model.aggregate([
       { $match: match },
+      {
+        $sort: sort,
+      },
       {
         $facet: {
           metadata: [{ $count: 'total' }],

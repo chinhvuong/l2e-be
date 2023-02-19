@@ -1,6 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsArray, IsEnum, IsMongoId, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsMongoId,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 enum Sort {
   PRICE_ASC = 'price:1',
@@ -8,7 +14,7 @@ enum Sort {
   STUDENT_ASC = 'students:1',
   PRICE_DESC = 'price:-1',
   RATING_DESC = 'ratingCount:-1',
-  STUDENT_DESC = 'students:-1'
+  STUDENT_DESC = 'students:-1',
 }
 export class CourseFindAllDto {
   @ApiPropertyOptional()
@@ -44,12 +50,12 @@ export class CourseFindAllDto {
   @Transform(({ value }) => {
     const t = {
       true: true,
-      false: false
-    }
+      false: false,
+    };
     if (typeof value === 'string') {
-      return [t[value]]
+      return [t[value]];
     }
-    return value.map((i: string) => t[i])
+    return value.map((i: string) => t[i]);
   })
   @IsArray()
   approved: boolean[];
@@ -75,7 +81,7 @@ export class CourseFindAllDto {
         RATING_DESC = 'ratingCount:-1',
         STUDENT_DESC = 'students:-1'
       }
-    `
+    `,
   })
   @Transform(({ value }) => {
     if (typeof value === 'string') {

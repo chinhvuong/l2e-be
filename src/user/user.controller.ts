@@ -16,7 +16,11 @@ export class UserController {
   async me(@CurrentUser() user: UserDocument) {
     return {
       ...user['_doc'],
-      isAdmin: Boolean(process.env.ADMIN_ADDRESS?.split(' ').map(address => address.toLowerCase()).includes(user.walletAddress.toLowerCase()))
+      isAdmin: Boolean(
+        process.env.ADMIN_ADDRESS?.split(' ')
+          .map((address) => address.toLowerCase())
+          .includes(user.walletAddress.toLowerCase()),
+      ),
     };
   }
 }

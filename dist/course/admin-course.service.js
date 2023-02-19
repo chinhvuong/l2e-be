@@ -36,7 +36,7 @@ let AdminCourseService = class AdminCourseService {
         this.categoryService = categoryService;
     }
     findAll(data) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             const match = {};
             if (data.query) {
@@ -61,8 +61,26 @@ let AdminCourseService = class AdminCourseService {
                     $limit: data.limit,
                 });
             }
+            const sort = {};
+            if ((_b = data === null || data === void 0 ? void 0 : data.sort) === null || _b === void 0 ? void 0 : _b.length) {
+                for (let i = 0; i < ((_c = data === null || data === void 0 ? void 0 : data.sort) === null || _c === void 0 ? void 0 : _c.length); i++) {
+                    const [attr, direction] = data.sort[i].split(':');
+                    if (direction === '-1') {
+                        sort[attr] = -1;
+                    }
+                    else {
+                        sort[attr] = 1;
+                    }
+                }
+            }
+            else {
+                sort.price = -1;
+            }
             const rs = yield this.model.aggregate([
                 { $match: match },
+                {
+                    $sort: sort
+                },
                 {
                     $facet: {
                         metadata: [{ $count: 'total' }],
@@ -71,7 +89,7 @@ let AdminCourseService = class AdminCourseService {
                 },
             ]);
             return {
-                total: ((_b = rs[0]) === null || _b === void 0 ? void 0 : _b.metadata[0]) ? (_c = rs[0]) === null || _c === void 0 ? void 0 : _c.metadata[0].total : 0,
+                total: ((_d = rs[0]) === null || _d === void 0 ? void 0 : _d.metadata[0]) ? (_e = rs[0]) === null || _e === void 0 ? void 0 : _e.metadata[0].total : 0,
                 data: rs[0] ? rs[0].data : [],
             };
         });

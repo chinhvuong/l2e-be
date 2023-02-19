@@ -12,11 +12,10 @@ export class AdminUserService {
     const match: { [key: string]: any } = {};
 
     if (data.query) {
-
       match['$or'] = [
-        { walletAddress: new RegExp(data.query, 'i'), },
-        { name: new RegExp(data.query, 'i'), }
-      ]
+        { walletAddress: new RegExp(data.query, 'i') },
+        { name: new RegExp(data.query, 'i') },
+      ];
     }
     const pagination: any[] = [];
     if (data.page !== undefined && data.limit !== undefined) {
@@ -29,19 +28,20 @@ export class AdminUserService {
         $limit: data.limit,
       });
     }
-    const sort: { [key: string]: 1 | -1 } = {}
+    const sort: { [key: string]: 1 | -1 } = {};
     // sort
     if (data?.sort?.length) {
       for (let i = 0; i < data?.sort?.length; i++) {
         const [attr, direction] = data.sort[i].split(':');
         if (direction === '-1') {
-          sort[attr] = -1
+          sort[attr] = -1;
         } else {
-          sort[attr] = 1
+          sort[attr] = 1;
         }
       }
-    } else { // price desc
-      sort.price = -1
+    } else {
+      // price desc
+      sort.price = -1;
     }
 
     const rs = await this.model.aggregate([
@@ -72,8 +72,8 @@ export class AdminUserService {
           title: 1,
           rating: 1,
           createdAt: 1,
-          courseCreated: { $size: "$courses" },
-          courseEnrolled: { $size: "$enrolls" }
+          courseCreated: { $size: '$courses' },
+          courseEnrolled: { $size: '$enrolls' },
         },
       },
 
