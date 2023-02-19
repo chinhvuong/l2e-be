@@ -39,6 +39,11 @@ export class AdminCourseService {
     if (data.category) {
       match.category = new ObjectId(data.category);
     }
+    if (data.approved?.length) {
+      match.approved = {
+        $in: data.approved
+      }
+    }
     const pagination: any[] = [];
     if (data.page !== undefined && data.limit !== undefined) {
       pagination.push({

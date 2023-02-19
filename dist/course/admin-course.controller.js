@@ -37,6 +37,12 @@ let AdminCourseController = class AdminCourseController {
     constructor(courseService) {
         this.courseService = courseService;
     }
+    getList(query) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("🚀 ~ file: admin-course.controller.ts:34 ~ AdminCourseController ~ getList ~ query", query);
+            return yield this.courseService.findAll(query);
+        });
+    }
     getApproveRequests(query) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.courseService.getApproveRequests(query);
@@ -65,6 +71,15 @@ let AdminCourseController = class AdminCourseController {
         });
     }
 };
+__decorate([
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, supper_admin_guard_1.SupperAdmin),
+    (0, common_1.Get)(''),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [course_find_all_dto_1.CourseFindAllDto]),
+    __metadata("design:returntype", Promise)
+], AdminCourseController.prototype, "getList", null);
 __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, supper_admin_guard_1.SupperAdmin),

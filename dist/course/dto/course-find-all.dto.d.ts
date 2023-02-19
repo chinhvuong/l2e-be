@@ -10,6 +10,7 @@ export declare class CourseFindAllDto {
     limit: number;
     page: number;
     query: string;
+    approved: boolean[];
     category: string;
     sort: Sort[];
 }

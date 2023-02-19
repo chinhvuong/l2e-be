@@ -29,6 +29,15 @@ export class AdminCourseController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, SupperAdmin)
+  @Get('')
+  async getList(@Query() query: CourseFindAllDto) {
+    console.log("🚀 ~ file: admin-course.controller.ts:34 ~ AdminCourseController ~ getList ~ query", query)
+    return await this.courseService.findAll(query);
+  }
+
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, SupperAdmin)
   @Get('approve-requests')
   async getApproveRequests(@Query() query: ApproveFindAllDto) {
     return await this.courseService.getApproveRequests(query);

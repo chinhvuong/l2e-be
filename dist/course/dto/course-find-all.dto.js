@@ -55,6 +55,24 @@ __decorate([
 ], CourseFindAllDto.prototype, "query", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({
+        description: 'approved filter',
+    }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => {
+        const t = {
+            true: true,
+            false: false
+        };
+        if (typeof value === 'string') {
+            return [t[value]];
+        }
+        return value.map((i) => t[i]);
+    }),
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], CourseFindAllDto.prototype, "approved", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({
         description: 'Search by _id of category',
     }),
     (0, class_validator_1.IsOptional)(),

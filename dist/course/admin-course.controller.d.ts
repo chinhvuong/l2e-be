@@ -33,6 +33,10 @@ import { ResolveApproveRequestDto } from './dto/resolve-approve-request.dto';
 export declare class AdminCourseController {
     private readonly courseService;
     constructor(courseService: AdminCourseService);
+    getList(query: CourseFindAllDto): Promise<{
+        total: any;
+        data: any;
+    }>;
     getApproveRequests(query: ApproveFindAllDto): Promise<{
         total: any;
         data: any;

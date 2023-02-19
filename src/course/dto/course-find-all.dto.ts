@@ -38,6 +38,23 @@ export class CourseFindAllDto {
   query: string;
 
   @ApiPropertyOptional({
+    description: 'approved filter',
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    const t = {
+      true: true,
+      false: false
+    }
+    if (typeof value === 'string') {
+      return [t[value]]
+    }
+    return value.map((i: string) => t[i])
+  })
+  @IsArray()
+  approved: boolean[];
+
+  @ApiPropertyOptional({
     description: 'Search by _id of category',
   })
   @IsOptional()

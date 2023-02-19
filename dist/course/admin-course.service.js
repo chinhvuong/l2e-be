@@ -36,7 +36,7 @@ let AdminCourseService = class AdminCourseService {
         this.categoryService = categoryService;
     }
     findAll(data) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const match = {};
             if (data.query) {
@@ -44,6 +44,11 @@ let AdminCourseService = class AdminCourseService {
             }
             if (data.category) {
                 match.category = new mongodb_1.ObjectId(data.category);
+            }
+            if ((_a = data.approved) === null || _a === void 0 ? void 0 : _a.length) {
+                match.approved = {
+                    $in: data.approved
+                };
             }
             const pagination = [];
             if (data.page !== undefined && data.limit !== undefined) {
@@ -66,7 +71,7 @@ let AdminCourseService = class AdminCourseService {
                 },
             ]);
             return {
-                total: ((_a = rs[0]) === null || _a === void 0 ? void 0 : _a.metadata[0]) ? (_b = rs[0]) === null || _b === void 0 ? void 0 : _b.metadata[0].total : 0,
+                total: ((_b = rs[0]) === null || _b === void 0 ? void 0 : _b.metadata[0]) ? (_c = rs[0]) === null || _c === void 0 ? void 0 : _c.metadata[0].total : 0,
                 data: rs[0] ? rs[0].data : [],
             };
         });
