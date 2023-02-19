@@ -50,7 +50,7 @@ __decorate([
             COURSE_ENROLLED_DESC = 'courseEnrolled:-1',
             COURSE_CREATED_DESC = 'courseCreated:-1',
         }
-    `
+    `,
     }),
     (0, class_transformer_1.Transform)(({ value }) => {
         if (typeof value === 'string') {

@@ -61,7 +61,7 @@ __decorate([
     (0, class_transformer_1.Transform)(({ value }) => {
         const t = {
             true: true,
-            false: false
+            false: false,
         };
         if (typeof value === 'string') {
             return [t[value]];
@@ -94,7 +94,7 @@ __decorate([
         RATING_DESC = 'ratingCount:-1',
         STUDENT_DESC = 'students:-1'
       }
-    `
+    `,
     }),
     (0, class_transformer_1.Transform)(({ value }) => {
         if (typeof value === 'string') {

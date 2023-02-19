@@ -36,8 +36,8 @@ let AdminUserService = class AdminUserService {
             const match = {};
             if (data.query) {
                 match['$or'] = [
-                    { walletAddress: new RegExp(data.query, 'i'), },
-                    { name: new RegExp(data.query, 'i'), }
+                    { walletAddress: new RegExp(data.query, 'i') },
+                    { name: new RegExp(data.query, 'i') },
                 ];
             }
             const pagination = [];
@@ -93,8 +93,8 @@ let AdminUserService = class AdminUserService {
                         title: 1,
                         rating: 1,
                         createdAt: 1,
-                        courseCreated: { $size: "$courses" },
-                        courseEnrolled: { $size: "$enrolls" }
+                        courseCreated: { $size: '$courses' },
+                        courseEnrolled: { $size: '$enrolls' },
                     },
                 },
                 { $sort: sort },

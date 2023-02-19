@@ -47,7 +47,7 @@ let AdminCourseService = class AdminCourseService {
             }
             if ((_a = data.approved) === null || _a === void 0 ? void 0 : _a.length) {
                 match.approved = {
-                    $in: data.approved
+                    $in: data.approved,
                 };
             }
             const pagination = [];
@@ -74,12 +74,12 @@ let AdminCourseService = class AdminCourseService {
                 }
             }
             else {
-                sort.price = -1;
+                sort.createdAt = -1;
             }
             const rs = yield this.model.aggregate([
                 { $match: match },
                 {
-                    $sort: sort
+                    $sort: sort,
                 },
                 {
                     $facet: {

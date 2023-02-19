@@ -69,7 +69,7 @@ export class AdminCourseService {
       }
     } else {
       // price desc
-      sort.price = -1;
+      sort.createdAt = -1;
     }
 
     const rs = await this.model.aggregate([

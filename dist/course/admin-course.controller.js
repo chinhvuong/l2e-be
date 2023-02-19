@@ -39,7 +39,7 @@ let AdminCourseController = class AdminCourseController {
     }
     getList(query) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("🚀 ~ file: admin-course.controller.ts:34 ~ AdminCourseController ~ getList ~ query", query);
+            console.log('🚀 ~ file: admin-course.controller.ts:34 ~ AdminCourseController ~ getList ~ query', query);
             return yield this.courseService.findAll(query);
         });
     }

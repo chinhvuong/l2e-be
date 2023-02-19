@@ -491,7 +491,7 @@ let CourseService = class CourseService {
                     },
                 },
                 {
-                    $sort: sort
+                    $sort: sort,
                 },
                 {
                     $facet: {
