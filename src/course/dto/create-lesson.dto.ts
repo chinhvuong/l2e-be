@@ -15,6 +15,10 @@ export class BaseCreateLessonDto {
   @IsUrl()
   media: string;
 
+  @ApiProperty({})
+  @IsString()
+  mediaName: string;
+
   @ApiProperty()
   @IsEnum(mediaType)
   mediaType: mediaType;

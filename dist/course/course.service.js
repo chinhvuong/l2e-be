@@ -414,7 +414,7 @@ let CourseService = class CourseService {
         });
     }
     getCourseList(data) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             const match = {
                 approved: true,
@@ -436,6 +436,21 @@ let CourseService = class CourseService {
                 pagination.push({
                     $limit: data.limit,
                 });
+            }
+            const sort = {};
+            if ((_a = data === null || data === void 0 ? void 0 : data.sort) === null || _a === void 0 ? void 0 : _a.length) {
+                for (let i = 0; i < ((_b = data === null || data === void 0 ? void 0 : data.sort) === null || _b === void 0 ? void 0 : _b.length); i++) {
+                    const [attr, direction] = data.sort[i].split(':');
+                    if (direction === '-1') {
+                        sort[attr] = -1;
+                    }
+                    else {
+                        sort[attr] = 1;
+                    }
+                }
+            }
+            else {
+                sort.price = -1;
             }
             const rs = yield this.model.aggregate([
                 { $match: match },
@@ -476,6 +491,9 @@ let CourseService = class CourseService {
                     },
                 },
                 {
+                    $sort: sort
+                },
+                {
                     $facet: {
                         metadata: [{ $count: 'total' }],
                         data: pagination,
@@ -483,7 +501,7 @@ let CourseService = class CourseService {
                 },
             ]);
             return {
-                total: ((_a = rs[0]) === null || _a === void 0 ? void 0 : _a.metadata[0]) ? (_b = rs[0]) === null || _b === void 0 ? void 0 : _b.metadata[0].total : 0,
+                total: ((_c = rs[0]) === null || _c === void 0 ? void 0 : _c.metadata[0]) ? (_d = rs[0]) === null || _d === void 0 ? void 0 : _d.metadata[0].total : 0,
                 data: rs[0] ? rs[0].data : [],
             };
         });

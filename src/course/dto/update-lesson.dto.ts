@@ -24,6 +24,11 @@ export class UpdateLessonDto {
   @IsUrl()
   media: string;
 
+  @ApiPropertyOptional({})
+  @IsOptional()
+  @IsString()
+  mediaName: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsEnum(mediaType)

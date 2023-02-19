@@ -3,6 +3,7 @@ export declare class UpdateLessonDto {
     name: string;
     description: string;
     media: string;
+    mediaName: string;
     mediaType: mediaType;
     quizzes: string[];
     _id: string;

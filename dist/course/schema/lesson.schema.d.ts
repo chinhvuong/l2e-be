@@ -8,6 +8,7 @@ export declare class Lesson {
     name: string;
     description: string;
     media: string;
+    mediaName: string;
     mediaType: mediaType;
     quizzes: Quiz[];
     mode: lessonMode;

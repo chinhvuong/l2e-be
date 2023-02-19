@@ -13,6 +13,15 @@ exports.CourseFindAllDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
+var Sort;
+(function (Sort) {
+    Sort["PRICE_ASC"] = "price:1";
+    Sort["RATING_ASC"] = "ratingCount:1";
+    Sort["STUDENT_ASC"] = "students:1";
+    Sort["PRICE_DESC"] = "price:-1";
+    Sort["RATING_DESC"] = "ratingCount:-1";
+    Sort["STUDENT_DESC"] = "students:-1";
+})(Sort || (Sort = {}));
 class CourseFindAllDto {
 }
 __decorate([
@@ -53,5 +62,31 @@ __decorate([
     (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
 ], CourseFindAllDto.prototype, "category", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, swagger_1.ApiPropertyOptional)({
+        example: [Sort.PRICE_DESC],
+        description: `
+      enum Sort {
+        PRICE_ASC = 'price:1',
+        RATING_ASC = 'ratingCount:1',
+        STUDENT_ASC = 'students:1',
+        PRICE_DESC = 'price:-1',
+        RATING_DESC = 'ratingCount:-1',
+        STUDENT_DESC = 'students:-1'
+      }
+    `
+    }),
+    (0, class_transformer_1.Transform)(({ value }) => {
+        if (typeof value === 'string') {
+            return [value];
+        }
+        return value;
+    }),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsEnum)(Sort, { each: true }),
+    __metadata("design:type", Array)
+], CourseFindAllDto.prototype, "sort", void 0);
 exports.CourseFindAllDto = CourseFindAllDto;
 //# sourceMappingURL=course-find-all.dto.js.map

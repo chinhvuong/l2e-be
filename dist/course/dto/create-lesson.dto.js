@@ -31,6 +31,11 @@ __decorate([
     __metadata("design:type", String)
 ], BaseCreateLessonDto.prototype, "media", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({}),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], BaseCreateLessonDto.prototype, "mediaName", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsEnum)(enum_1.mediaType),
     __metadata("design:type", String)

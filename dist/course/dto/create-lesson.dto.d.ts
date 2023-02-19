@@ -3,6 +3,7 @@ export declare class BaseCreateLessonDto {
     name: string;
     description: string;
     media: string;
+    mediaName: string;
     mediaType: mediaType;
     quizzes: string[];
 }

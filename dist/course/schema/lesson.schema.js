@@ -36,6 +36,10 @@ __decorate([
     __metadata("design:type", String)
 ], Lesson.prototype, "media", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ default: null }),
+    __metadata("design:type", String)
+], Lesson.prototype, "mediaName", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ default: enum_1.mediaType.VIDEO }),
     __metadata("design:type", String)
 ], Lesson.prototype, "mediaType", void 0);

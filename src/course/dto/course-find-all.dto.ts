@@ -1,7 +1,15 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsMongoId, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsMongoId, IsOptional, IsString } from 'class-validator';
 
+enum Sort {
+  PRICE_ASC = 'price:1',
+  RATING_ASC = 'ratingCount:1',
+  STUDENT_ASC = 'students:1',
+  PRICE_DESC = 'price:-1',
+  RATING_DESC = 'ratingCount:-1',
+  STUDENT_DESC = 'students:-1'
+}
 export class CourseFindAllDto {
   @ApiPropertyOptional()
   @IsOptional()
@@ -36,4 +44,29 @@ export class CourseFindAllDto {
   @IsString()
   @IsMongoId()
   category: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ApiPropertyOptional({
+    example: [Sort.PRICE_DESC],
+    description: `
+      enum Sort {
+        PRICE_ASC = 'price:1',
+        RATING_ASC = 'ratingCount:1',
+        STUDENT_ASC = 'students:1',
+        PRICE_DESC = 'price:-1',
+        RATING_DESC = 'ratingCount:-1',
+        STUDENT_DESC = 'students:-1'
+      }
+    `
+  })
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return [value];
+    }
+    return value;
+  })
+  @IsArray()
+  @IsEnum(Sort, { each: true })
+  sort: Sort[];
 }

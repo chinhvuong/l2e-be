@@ -21,6 +21,9 @@ export class Lesson {
   @Prop({ default: null })
   media: string;
 
+  @Prop({ default: null })
+  mediaName: string;
+
   @Prop({ default: mediaType.VIDEO })
   mediaType: mediaType;
 
