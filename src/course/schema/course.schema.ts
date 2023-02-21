@@ -55,6 +55,9 @@ export class Course {
   @Prop({ default: null })
   thumbnail: string;
 
+  @Prop({ default: null })
+  promotionalVideo: string
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
   category: Category;
 

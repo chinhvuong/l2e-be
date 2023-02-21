@@ -19,6 +19,7 @@ export declare class Course {
     requirements: string[];
     goals: string[];
     thumbnail: string;
+    promotionalVideo: string;
     category: Category;
     include: Record<any, any>;
 }

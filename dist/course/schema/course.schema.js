@@ -100,6 +100,10 @@ __decorate([
     __metadata("design:type", String)
 ], Course.prototype, "thumbnail", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ default: null }),
+    __metadata("design:type", String)
+], Course.prototype, "promotionalVideo", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }),
     __metadata("design:type", category_schema_1.Category)
 ], Course.prototype, "category", void 0);

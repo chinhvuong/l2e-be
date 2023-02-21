@@ -99,5 +99,10 @@ export class UpdateCourseDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsString()
+  promotionalVideo: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   include: CourseInclude;
 }

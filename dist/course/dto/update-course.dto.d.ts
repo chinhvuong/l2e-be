@@ -19,5 +19,6 @@ export declare class UpdateCourseDto {
     requirements: string[];
     goals: string[];
     thumbnail: string;
+    promotionalVideo: string;
     include: CourseInclude;
 }
