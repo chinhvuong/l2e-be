@@ -197,14 +197,14 @@ export class CourseService {
           as: '_category',
         },
       },
-      {
-        $lookup: {
-          from: 'requestapproves',
-          localField: '_id',
-          foreignField: 'courseId',
-          as: 'approveReq',
-        },
-      },
+      // {
+      //   $lookup: {
+      //     from: 'requestapproves',
+      //     localField: '_id',
+      //     foreignField: 'courseId',
+      //     as: 'approveReq',
+      //   },
+      // },
       {
         $project: {
           name: 1,
@@ -216,7 +216,7 @@ export class CourseService {
           price: 1,
           ratingCount: { $size: '$ratings' },
           approved: 1,
-          lastApproveRequestAt: { $first: "$approveReq.lastRequestAt" }//{ $arrayElemAt: ['$approveReq', 0] },
+          // lastApproveRequestAt: { $first: "$approveReq.lastRequestAt" }//{ $arrayElemAt: ['$approveReq', 0] },
         },
       },
       {
@@ -337,7 +337,7 @@ export class CourseService {
       lastRequestAt: {
         $gte: new Date(
           Date.now() -
-          Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
+            Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
         ),
       },
     });
@@ -352,16 +352,20 @@ export class CourseService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return await this.requestApproveModel.findOneAndUpdate({
-      courseId: course._id,
-    }, {
-      ...data,
-      courseId: course._id,
-      lastRequestAt: new Date()
-    }, {
-      upsert: true,
-      new: true
-    })
+    return await this.requestApproveModel.findOneAndUpdate(
+      {
+        courseId: course._id,
+      },
+      {
+        ...data,
+        courseId: course._id,
+        lastRequestAt: new Date(),
+      },
+      {
+        upsert: true,
+        new: true,
+      },
+    );
   }
 
   async getMyPastRequest(user: User, filter: ApproveFindAllDto) {
@@ -460,9 +464,13 @@ export class CourseService {
         },
       },
     ]);
+    const requestApprove = await this.requestApproveModel.findOne({
+      courseId: course._id,
+    });
 
     return {
       ...course['_doc'],
+      lastApproveRequestAt: requestApprove?.lastRequestAt || null,
       sections,
     };
   }

@@ -189,14 +189,6 @@ let CourseService = class CourseService {
                     },
                 },
                 {
-                    $lookup: {
-                        from: 'requestapproves',
-                        localField: '_id',
-                        foreignField: 'courseId',
-                        as: 'approveReq',
-                    },
-                },
-                {
                     $project: {
                         name: 1,
                         courseId: 1,
@@ -207,7 +199,6 @@ let CourseService = class CourseService {
                         price: 1,
                         ratingCount: { $size: '$ratings' },
                         approved: 1,
-                        lastApproveRequestAt: { $first: "$approveReq.lastRequestAt" }
                     },
                 },
                 {
@@ -424,7 +415,10 @@ let CourseService = class CourseService {
                     },
                 },
             ]);
-            return Object.assign(Object.assign({}, course['_doc']), { sections });
+            const requestApprove = yield this.requestApproveModel.findOne({
+                courseId: course._id
+            });
+            return Object.assign(Object.assign({}, course['_doc']), { lastApproveRequestAt: (requestApprove === null || requestApprove === void 0 ? void 0 : requestApprove.lastRequestAt) || null, sections });
         });
     }
     getCourseList(data) {

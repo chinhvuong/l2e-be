@@ -18,7 +18,7 @@ export class RequestApprove {
   status: ApproveRequestStatus;
 
   @Prop({ type: Date, default: Date.now })
-  lastRequestAt: Date
+  lastRequestAt: Date;
 }
 
 export const RequestApproveSchema =
