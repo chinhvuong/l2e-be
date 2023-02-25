@@ -16,6 +16,9 @@ export class RequestApprove {
 
   @Prop({ default: ApproveRequestStatus.PENDING })
   status: ApproveRequestStatus;
+
+  @Prop({ type: Date, default: Date.now })
+  lastRequestAt: Date
 }
 
 export const RequestApproveSchema =

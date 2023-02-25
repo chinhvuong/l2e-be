@@ -6,5 +6,6 @@ export declare class RequestApprove {
     courseId: Course;
     notes: string[];
     status: ApproveRequestStatus;
+    lastRequestAt: Date;
 }
 export declare const RequestApproveSchema: mongoose.Schema<RequestApprove, mongoose.Model<RequestApprove, any, any, any, any>, {}, {}, {}, {}, "type", RequestApprove>;

@@ -31,6 +31,10 @@ __decorate([
     (0, mongoose_1.Prop)({ default: enum_1.ApproveRequestStatus.PENDING }),
     __metadata("design:type", String)
 ], RequestApprove.prototype, "status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date, default: Date.now }),
+    __metadata("design:type", Date)
+], RequestApprove.prototype, "lastRequestAt", void 0);
 RequestApprove = __decorate([
     (0, mongoose_1.Schema)({
         timestamps: true,

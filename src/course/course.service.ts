@@ -198,6 +198,14 @@ export class CourseService {
         },
       },
       {
+        $lookup: {
+          from: 'requestapproves',
+          localField: '_id',
+          foreignField: 'courseId',
+          as: 'approveReq',
+        },
+      },
+      {
         $project: {
           name: 1,
           courseId: 1,
@@ -208,6 +216,7 @@ export class CourseService {
           price: 1,
           ratingCount: { $size: '$ratings' },
           approved: 1,
+          lastApproveRequestAt: { $first: "$approveReq.lastRequestAt" }//{ $arrayElemAt: ['$approveReq', 0] },
         },
       },
       {
@@ -325,10 +334,10 @@ export class CourseService {
     const course = await this.validateOwner(data.id, user.walletAddress);
     const existRequest = await this.requestApproveModel.findOne({
       courseId: course._id,
-      createdAt: {
+      lastRequestAt: {
         $gte: new Date(
           Date.now() -
-            Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
+          Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
         ),
       },
     });
@@ -343,10 +352,16 @@ export class CourseService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return await new this.requestApproveModel({
+    return await this.requestApproveModel.findOneAndUpdate({
+      courseId: course._id,
+    }, {
       ...data,
       courseId: course._id,
-    }).save();
+      lastRequestAt: new Date()
+    }, {
+      upsert: true,
+      new: true
+    })
   }
 
   async getMyPastRequest(user: User, filter: ApproveFindAllDto) {
