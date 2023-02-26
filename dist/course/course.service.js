@@ -555,6 +555,7 @@ let CourseService = class CourseService {
                         name: 1,
                         description: 1,
                         overview: 1,
+                        promotionalVideo: 1,
                         courseId: 1,
                         rating: 1,
                         includes: 1,
