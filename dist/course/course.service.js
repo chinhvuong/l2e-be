@@ -34,6 +34,7 @@ const web3_service_1 = require("../web3/web3.service");
 const config_1 = require("@nestjs/config");
 const request_aprrove_schema_1 = require("./schema/request-aprrove.schema");
 const section_schema_1 = require("./schema/section.schema");
+const enum_1 = require("./enum");
 let CourseService = class CourseService {
     constructor(model, sectionModel, enrollModel, requestApproveModel, categoryService, userService, web3Service, configService) {
         this.model = model;
@@ -322,9 +323,9 @@ let CourseService = class CourseService {
             }
             return yield this.requestApproveModel.findOneAndUpdate({
                 courseId: course._id,
-            }, Object.assign(Object.assign({}, data), { courseId: course._id, lastRequestAt: new Date() }), {
+            }, Object.assign(Object.assign({}, data), { courseId: course._id, lastRequestAt: new Date(), status: enum_1.ApproveRequestStatus.PENDING }), {
                 upsert: true,
-                new: true
+                new: true,
             });
         });
     }
@@ -416,7 +417,7 @@ let CourseService = class CourseService {
                 },
             ]);
             const requestApprove = yield this.requestApproveModel.findOne({
-                courseId: course._id
+                courseId: course._id,
             });
             return Object.assign(Object.assign({}, course['_doc']), { lastApproveRequestAt: (requestApprove === null || requestApprove === void 0 ? void 0 : requestApprove.lastRequestAt) || null, sections });
         });

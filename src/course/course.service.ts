@@ -25,6 +25,7 @@ import {
 import { RequestApproveDto } from './dto/request-approve.dto';
 import { ApproveFindAllDto } from './dto/approve-request-find-all.dto';
 import { Section, SectionDocument } from './schema/section.schema';
+import { ApproveRequestStatus } from './enum';
 
 @Injectable()
 export class CourseService {
@@ -360,6 +361,7 @@ export class CourseService {
         ...data,
         courseId: course._id,
         lastRequestAt: new Date(),
+        status: ApproveRequestStatus.PENDING,
       },
       {
         upsert: true,
