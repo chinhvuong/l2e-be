@@ -549,6 +549,7 @@ export class CourseService {
         $project: {
           name: 1,
           courseId: 1,
+          thumbnail: 1,
           rating: 1,
           author: { $arrayElemAt: ['$authors', 0] },
           category: { $arrayElemAt: ['$_category', 0] },

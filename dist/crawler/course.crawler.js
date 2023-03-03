@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const base_crawler_1 = require("./base.crawler");
 class CourseCrawler extends base_crawler_1.BaseCrawler {
-    constructor(_blockService, _courseService, provider, contractAddress, abi, chainId, startBlock, name, gapTime = 60000, maxBlockRange = 500) {
+    constructor(_blockService, _courseService, provider, contractAddress, abi, chainId, startBlock, name, gapTime = 60000, maxBlockRange = 3000) {
         super(provider, contractAddress, abi, chainId, startBlock, name, gapTime, maxBlockRange);
         this.decimal = Math.pow(10, 18);
         this.blockService = _blockService;
