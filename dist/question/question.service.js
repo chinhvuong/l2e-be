@@ -65,7 +65,7 @@ let QuestionService = class QuestionService {
             if (!question) {
                 throw new common_1.HttpException('Question does not exist', common_1.HttpStatus.BAD_REQUEST);
             }
-            yield this.courseService.validateOwner(id, user.walletAddress);
+            yield this.courseService.validateOwner(question.courseId, user.walletAddress);
             return yield this.model.findOneAndUpdate({
                 _id: new mongodb_1.ObjectId(id),
             }, data, { new: true });

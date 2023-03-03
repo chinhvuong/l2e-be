@@ -64,7 +64,10 @@ export class QuestionService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    await this.courseService.validateOwner(id, user.walletAddress);
+    await this.courseService.validateOwner(
+      question.courseId,
+      user.walletAddress,
+    );
 
     return await this.model.findOneAndUpdate(
       {
