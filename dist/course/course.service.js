@@ -200,6 +200,7 @@ let CourseService = class CourseService {
                         price: 1,
                         ratingCount: { $size: '$ratings' },
                         approved: 1,
+                        thumbnail: 1,
                     },
                 },
                 {
