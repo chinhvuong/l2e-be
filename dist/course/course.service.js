@@ -109,7 +109,13 @@ let CourseService = class CourseService {
                     throw new common_1.HttpException('Permission denied', common_1.HttpStatus.FORBIDDEN);
                 }
                 const rs = yield this.model.findOneAndUpdate({ _id: new mongodb_1.ObjectId(courseId) }, data, { new: true });
-                return rs;
+                const approveRequest = yield this.requestApproveModel.findOne({
+                    courseId: course._id
+                });
+                if (approveRequest) {
+                    return Object.assign(Object.assign({}, rs), { lastApproveRequestAt: approveRequest.lastRequestAt });
+                }
+                return Object.assign(Object.assign({}, rs), { lastApproveRequestAt: null });
             }
             catch (error) {
                 throw new common_1.HttpException(error === null || error === void 0 ? void 0 : error.message, common_1.HttpStatus.BAD_REQUEST);

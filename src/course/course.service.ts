@@ -120,7 +120,19 @@ export class CourseService {
         data,
         { new: true },
       );
-      return rs;
+      const approveRequest = await this.requestApproveModel.findOne({
+        courseId: course._id
+      })
+      if (approveRequest) {
+        return {
+          ...rs,
+          lastApproveRequestAt: approveRequest.lastRequestAt
+        }
+      }
+      return {
+        ...rs,
+        lastApproveRequestAt: null
+      };
     } catch (error) {
       throw new HttpException(error?.message, HttpStatus.BAD_REQUEST);
     }
@@ -339,7 +351,7 @@ export class CourseService {
       lastRequestAt: {
         $gte: new Date(
           Date.now() -
-            Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
+          Number(this.configService.get('REQUEST_APPROVE_GAP_TIME')),
         ),
       },
     });
