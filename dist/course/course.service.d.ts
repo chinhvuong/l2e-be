@@ -55,77 +55,7 @@ export declare class CourseService {
     createNewCourse(user: UserDocument, data: CreateCourseDto): Promise<Course & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     }>;
-    updateCourse(user: UserDocument, data: UpdateCourseDto, courseId: string): Promise<{
-        lastApproveRequestAt: Date;
-        courseId?: number | undefined;
-        owner?: string | undefined;
-        author?: string | undefined;
-        name?: string | undefined;
-        overview?: string | undefined;
-        description?: string | undefined;
-        price?: number | undefined;
-        rating?: number | undefined;
-        reviews?: number | undefined;
-        students?: number | undefined;
-        language?: import("./enum").language | undefined;
-        approved?: boolean | undefined;
-        requirements?: string[] | undefined;
-        goals?: string[] | undefined;
-        thumbnail?: string | undefined;
-        promotionalVideo?: string | undefined;
-        category?: import("./schema/category.schema").Category | undefined;
-        include?: Record<any, any> | undefined;
-        _id?: any;
-        __v?: any;
-        $locals?: Record<string, unknown> | undefined;
-        $op?: "remove" | "validate" | "save" | null | undefined;
-        $where?: Record<string, unknown> | undefined;
-        baseModelName?: string | undefined;
-        collection?: import("mongoose").Collection<import("bson").Document> | undefined;
-        db?: import("mongoose").Connection | undefined;
-        errors?: import("mongoose").Error.ValidationError | undefined;
-        id?: any;
-        isNew?: boolean | undefined;
-        modelName?: string | undefined;
-        schema?: import("mongoose").Schema<any, Model<any, any, any, any, any>, {}, {}, {}, {}, "type", {
-            [x: string]: any;
-        }> | undefined;
-    } | {
-        lastApproveRequestAt: null;
-        courseId?: number | undefined;
-        owner?: string | undefined;
-        author?: string | undefined;
-        name?: string | undefined;
-        overview?: string | undefined;
-        description?: string | undefined;
-        price?: number | undefined;
-        rating?: number | undefined;
-        reviews?: number | undefined;
-        students?: number | undefined;
-        language?: import("./enum").language | undefined;
-        approved?: boolean | undefined;
-        requirements?: string[] | undefined;
-        goals?: string[] | undefined;
-        thumbnail?: string | undefined;
-        promotionalVideo?: string | undefined;
-        category?: import("./schema/category.schema").Category | undefined;
-        include?: Record<any, any> | undefined;
-        _id?: any;
-        __v?: any;
-        $locals?: Record<string, unknown> | undefined;
-        $op?: "remove" | "validate" | "save" | null | undefined;
-        $where?: Record<string, unknown> | undefined;
-        baseModelName?: string | undefined;
-        collection?: import("mongoose").Collection<import("bson").Document> | undefined;
-        db?: import("mongoose").Connection | undefined;
-        errors?: import("mongoose").Error.ValidationError | undefined;
-        id?: any;
-        isNew?: boolean | undefined;
-        modelName?: string | undefined;
-        schema?: import("mongoose").Schema<any, Model<any, any, any, any, any>, {}, {}, {}, {}, "type", {
-            [x: string]: any;
-        }> | undefined;
-    }>;
+    updateCourse(user: UserDocument, data: UpdateCourseDto, courseId: string): Promise<any>;
     findOneAndUpdate(...args: any[]): Promise<(Course & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     }) | null>;

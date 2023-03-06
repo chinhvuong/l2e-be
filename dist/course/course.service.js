@@ -113,9 +113,9 @@ let CourseService = class CourseService {
                     courseId: course._id
                 });
                 if (approveRequest) {
-                    return Object.assign(Object.assign({}, rs), { lastApproveRequestAt: approveRequest.lastRequestAt });
+                    return Object.assign(Object.assign({}, rs['_doc']), { lastApproveRequestAt: approveRequest.lastRequestAt });
                 }
-                return Object.assign(Object.assign({}, rs), { lastApproveRequestAt: null });
+                return Object.assign(Object.assign({}, rs['_doc']), { lastApproveRequestAt: null });
             }
             catch (error) {
                 throw new common_1.HttpException(error === null || error === void 0 ? void 0 : error.message, common_1.HttpStatus.BAD_REQUEST);

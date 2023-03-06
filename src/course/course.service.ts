@@ -115,7 +115,7 @@ export class CourseService {
       if (course.owner.toLowerCase() !== user.walletAddress.toLowerCase()) {
         throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
       }
-      const rs = await this.model.findOneAndUpdate(
+      const rs: any = await this.model.findOneAndUpdate(
         { _id: new ObjectId(courseId) },
         data,
         { new: true },
@@ -125,12 +125,12 @@ export class CourseService {
       })
       if (approveRequest) {
         return {
-          ...rs,
+          ...rs['_doc'],
           lastApproveRequestAt: approveRequest.lastRequestAt
         }
       }
       return {
-        ...rs,
+        ...rs['_doc'],
         lastApproveRequestAt: null
       };
     } catch (error) {
