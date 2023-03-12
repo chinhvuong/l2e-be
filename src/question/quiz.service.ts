@@ -49,6 +49,7 @@ export class QuizService {
     );
 
     return await new this.model({
+      ...data,
       questions: questionIds,
       courseId: new ObjectId(data.courseId),
     }).save();
