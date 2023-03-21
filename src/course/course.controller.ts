@@ -131,4 +131,14 @@ export class CourseController {
   ) {
     return this.courseService.getSignatureToMintCourse(id, user);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('learn')
+  async learnCourse(
+    @Query() { id }: CourseIdDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return this.courseService.learnCourse(user._id, id);
+  }
 }

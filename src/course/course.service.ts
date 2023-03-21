@@ -1,5 +1,6 @@
 import { User, UserDocument } from '@/user/schema/user.schema';
 import {
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -26,6 +27,7 @@ import { RequestApproveDto } from './dto/request-approve.dto';
 import { ApproveFindAllDto } from './dto/approve-request-find-all.dto';
 import { Section, SectionDocument } from './schema/section.schema';
 import { ApproveRequestStatus } from './enum';
+import { Quiz, QuizDocument } from '@/question/schema/quiz.schema';
 
 @Injectable()
 export class CourseService {
@@ -33,6 +35,7 @@ export class CourseService {
     @InjectModel(Course.name) private model: Model<CourseDocument>,
     @InjectModel(Section.name) private sectionModel: Model<SectionDocument>,
     @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>,
+    @InjectModel(Quiz.name) private quizModel: Model<QuizDocument>,
     @InjectModel(RequestApprove.name)
     private requestApproveModel: Model<RequestApproveDocument>,
     private readonly categoryService: CategoryService,
@@ -701,6 +704,74 @@ export class CourseService {
     });
     return {
       enroll: enroll > 0,
+    };
+  }
+
+  async learnCourse(userId: string, courseId: string) {
+    const checkEnroll = await this.checkEnroll(userId, courseId);
+    // if (!checkEnroll.enroll) {
+    //   throw new ForbiddenException()
+    // }
+    const course = await this.model.findOne({
+      _id: new ObjectId(courseId),
+    });
+    if (!course) {
+      throw new NotFoundException();
+    }
+    const sections = await this.sectionModel.aggregate([
+      {
+        $match: {
+          courseId: course._id,
+        },
+      },
+      {
+        $lookup: {
+          from: 'lessons',
+          localField: '_id',
+          foreignField: 'sectionId',
+          as: 'lessons',
+        },
+      },
+      {
+        $sort: {
+          order: 1,
+        },
+      },
+    ]);
+    // console.log("🚀 ~ file: course.service.ts:665 ~ CourseService ~ getCoursePreview ~ sections", sections)
+    course['sections'] = sections;
+    // const quizIds: ObjectId[] = []
+
+    // for (let i = 0; i < sections.length; i++) {
+    //   for (let j = 0; j < sections[i].lessons.length; j++) {
+    //     if (sections[i].lessons.quizzes?.length)
+    //       quizIds.push(...sections[i].lessons.quizzes)
+    //   }
+    // }
+
+    for (let i = 0; i < sections.length; i++) {
+      for (let j = 0; j < sections[i].lessons.length; j++) {
+        if (sections[i].lessons.quizzes?.length) {
+          const quizzesList = await this.quizModel.aggregate([
+            {
+              $match: {
+                _id: {
+                  $in: sections[i].lessons.quizzes.map(
+                    (item: string) => new ObjectId(item),
+                  ),
+                },
+              },
+            },
+          ]);
+
+          sections[i].lessons.quizzes = quizzesList;
+        }
+      }
+    }
+
+    return {
+      ...course['_doc'],
+      sections,
     };
   }
 }
