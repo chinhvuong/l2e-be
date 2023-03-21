@@ -709,9 +709,9 @@ export class CourseService {
 
   async learnCourse(userId: string, courseId: string) {
     const checkEnroll = await this.checkEnroll(userId, courseId);
-    // if (!checkEnroll.enroll) {
-    //   throw new ForbiddenException()
-    // }
+    if (!checkEnroll.enroll) {
+      throw new ForbiddenException();
+    }
     const course = await this.model.findOne({
       _id: new ObjectId(courseId),
     });
