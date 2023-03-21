@@ -1,4 +1,5 @@
 import { QuestionModule } from '@/question/question.module';
+import { Quiz, QuizSchema } from '@/question/schema/quiz.schema';
 import { UserModule } from '@/user/user.module';
 import { Web3Module } from '@/web3/web3.module';
 import { forwardRef, Module } from '@nestjs/common';
@@ -32,6 +33,7 @@ import { SectionService } from './section.service';
       { name: Lesson.name, schema: LessonSchema },
       { name: Enroll.name, schema: EnrollSchema },
       { name: RequestApprove.name, schema: RequestApproveSchema },
+      { name: Quiz.name, schema: QuizSchema },
     ]),
     forwardRef(() => QuestionModule),
     UserModule,
