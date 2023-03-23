@@ -721,9 +721,11 @@ export class CourseService {
     if (!checkEnroll.enroll) {
       throw new ForbiddenException();
     }
-    const course = await this.model.findOne({
-      _id: new ObjectId(courseId),
-    });
+    const course = await this.model
+      .findOne({
+        _id: new ObjectId(courseId),
+      })
+      .populate('finalTest');
     if (!course) {
       throw new NotFoundException();
     }
@@ -760,12 +762,12 @@ export class CourseService {
 
     for (let i = 0; i < sections.length; i++) {
       for (let j = 0; j < sections[i].lessons.length; j++) {
-        if (sections[i].lessons.quizzes?.length) {
+        if (sections[i].lessons[j].quizzes?.length) {
           const quizzesList = await this.quizModel.aggregate([
             {
               $match: {
                 _id: {
-                  $in: sections[i].lessons.quizzes.map(
+                  $in: sections[i].lessons[j].quizzes.map(
                     (item: string) => new ObjectId(item),
                   ),
                 },
@@ -773,8 +775,9 @@ export class CourseService {
             },
           ]);
 
-          sections[i].lessons.quizzes = quizzesList;
+          sections[i].lessons[j].quizzes = quizzesList;
         }
+        sections[i].lessons[j].learned = false;
       }
     }
 

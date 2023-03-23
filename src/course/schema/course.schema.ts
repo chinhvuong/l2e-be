@@ -3,6 +3,7 @@ import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Category } from './category.schema';
 import * as mongoose from 'mongoose';
+import { Quiz } from '@/question/schema/quiz.schema';
 
 export type CourseDocument = Course & Document;
 
@@ -74,6 +75,9 @@ export class Course {
     }),
   )
   include: Record<any, any>;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Quiz' })
+  finalTest: Quiz;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);
