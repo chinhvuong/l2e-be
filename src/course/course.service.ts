@@ -118,6 +118,15 @@ export class CourseService {
       if (course.owner.toLowerCase() !== user.walletAddress.toLowerCase()) {
         throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
       }
+      if (data.finalTest) {
+        const finalTest = await this.quizModel.findOne({
+          id: new ObjectId(data.finalTest),
+          courseId: new ObjectId(courseId),
+        });
+        if (finalTest) {
+          data.finalTest = finalTest._id;
+        }
+      }
       const rs: any = await this.model.findOneAndUpdate(
         { _id: new ObjectId(courseId) },
         data,
