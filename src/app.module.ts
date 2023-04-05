@@ -15,6 +15,7 @@ import { RatingModule } from './rating/rating.module';
 import { S3Module } from './s3/s3.module';
 import { GameModule } from './game/game.module';
 import { BalanceModule } from './balance/balance.module';
+import { RewardModule } from './reward/reward.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { BalanceModule } from './balance/balance.module';
     S3Module,
     GameModule,
     BalanceModule,
+    RewardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
