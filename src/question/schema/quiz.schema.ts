@@ -13,7 +13,7 @@ export class Quiz {
   questions: Question[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Course' })
-  courseId: Course;
+  courseId: string;
 
   @Prop({ default: '' })
   name: string;

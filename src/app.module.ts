@@ -13,6 +13,7 @@ import { CrawlerModule } from './crawler/crawler.module';
 import { BlockModule } from './block/block.module';
 import { RatingModule } from './rating/rating.module';
 import { S3Module } from './s3/s3.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { S3Module } from './s3/s3.module';
     BlockModule,
     RatingModule,
     S3Module,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],

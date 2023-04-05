@@ -26,7 +26,10 @@ export class QuizService {
   }
 
   async findOneBy(...args) {
-    return await this.model.findOne(...args).exec();
+    return await this.model
+      .findOne(...args)
+      .populate('questions')
+      .exec();
   }
 
   private async validateListQuestions(questions: string[], courseId: string) {

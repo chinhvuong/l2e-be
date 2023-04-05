@@ -1,0 +1,4 @@
+export enum GAME_STATUS {
+  INPROGRESS = 'INPROGRESS',
+  COMPLETED = 'COMPLETED',
+}
