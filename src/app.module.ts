@@ -14,6 +14,7 @@ import { BlockModule } from './block/block.module';
 import { RatingModule } from './rating/rating.module';
 import { S3Module } from './s3/s3.module';
 import { GameModule } from './game/game.module';
+import { BalanceModule } from './balance/balance.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { GameModule } from './game/game.module';
     RatingModule,
     S3Module,
     GameModule,
+    BalanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
