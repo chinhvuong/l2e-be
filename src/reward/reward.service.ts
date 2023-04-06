@@ -48,7 +48,7 @@ export class RewardService {
     );
     return {
       reward: rs.reward,
-      success: false,
+      success: true,
       message: 'Welcome back!',
     };
   }
