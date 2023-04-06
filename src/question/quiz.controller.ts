@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseArrayPipe,
@@ -52,5 +53,15 @@ export class QuizController {
     @Query() data: QuizFindAll,
   ) {
     return await this.quizService.manageGetQuizzes(user, data);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Delete('manage/:id')
+  async deleteQuiz(
+    @CurrentUser() user: UserDocument,
+    @Param() { id }: QuizIdDto,
+  ) {
+    return await this.quizService.deleteQuiz(user, id);
   }
 }

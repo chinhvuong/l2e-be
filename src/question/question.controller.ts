@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseArrayPipe,
@@ -67,5 +68,15 @@ export class QuestionController {
     @Query() data: QuestionFindAll,
   ) {
     return await this.questionService.manageGetQuestions(user, data);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Delete('manage/:id')
+  async deleteQuestions(
+    @CurrentUser() user: UserDocument,
+    @Param() { id }: QuestionIdDto,
+  ) {
+    return await this.questionService.deleteQuestion(user, id);
   }
 }

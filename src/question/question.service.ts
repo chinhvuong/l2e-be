@@ -78,6 +78,25 @@ export class QuestionService {
     );
   }
 
+  async deleteQuestion(user: UserDocument, id: string) {
+    const question = await this.model.findOne({
+      _id: new ObjectId(id),
+    });
+    if (!question) {
+      throw new HttpException(
+        'Question does not exist',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    await this.courseService.validateOwner(
+      question.courseId,
+      user.walletAddress,
+    );
+
+    return await this.model.findOneAndDelete({
+      _id: new ObjectId(id),
+    });
+  }
   async find(...args) {
     return await this.model.find(...args);
   }

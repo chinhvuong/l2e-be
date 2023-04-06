@@ -159,15 +159,19 @@ export class CourseService {
   }
 
   async validateOwner(courseId: string, owner: string) {
-    const course = await this.model.findOne({
-      _id: new ObjectId(courseId),
-    });
+    const course = await this.model
+      .findOne({
+        _id: new ObjectId(courseId),
+      })
+      .populate('finalTest');
+
     if (!course) {
       throw new HttpException('Course does not exist', HttpStatus.BAD_REQUEST);
     }
     if (course.owner.toLowerCase() !== owner.toLowerCase()) {
       throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
     }
+
     return course;
   }
 

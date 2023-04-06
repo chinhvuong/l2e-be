@@ -56,6 +56,14 @@ export class LessonService {
 
     const rs = await this.model.aggregate([
       { $match: match },
+      {
+        $lookup: {
+          from: 'quizzes',
+          localField: 'quizzes',
+          foreignField: '_id',
+          as: 'quizzes',
+        },
+      },
       { $sort: { order: 1 } },
       {
         $facet: {

@@ -83,6 +83,23 @@ export class QuizService {
     );
   }
 
+  async deleteQuiz(user: UserDocument, id: string) {
+    const quiz = await this.model.findOne({
+      _id: new ObjectId(id),
+    });
+    if (!quiz) {
+      throw new HttpException('Quiz does not exist', HttpStatus.BAD_REQUEST);
+    }
+    await this.courseService.validateOwner(
+      quiz.courseId?.toString(),
+      user.walletAddress,
+    );
+
+    return await this.model.findOneAndDelete({
+      _id: new ObjectId(id),
+    });
+  }
+
   async manageGetQuizzes(user: UserDocument, data: QuizFindAll) {
     await this.courseService.validateOwner(data.courseId, user.walletAddress);
     const match: { [key: string]: any } = {
