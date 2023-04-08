@@ -748,6 +748,26 @@ export class CourseService {
         },
       },
       {
+        $unwind: {
+          path: '$lessons',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $sort: {
+          _id: 1,
+          'lessons.order': 1,
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          lessons: {
+            $push: '$lessons',
+          },
+        },
+      },
+      {
         $sort: {
           order: 1,
         },
