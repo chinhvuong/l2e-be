@@ -742,29 +742,20 @@ export class CourseService {
       {
         $lookup: {
           from: 'lessons',
-          localField: '_id',
-          foreignField: 'sectionId',
+          let: { sectionId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$sectionId', '$$sectionId'] },
+              },
+            },
+            {
+              $sort: {
+                order: 1,
+              },
+            },
+          ],
           as: 'lessons',
-        },
-      },
-      {
-        $unwind: {
-          path: '$lessons',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $sort: {
-          _id: 1,
-          'lessons.order': 1,
-        },
-      },
-      {
-        $group: {
-          _id: '$_id',
-          lessons: {
-            $push: '$lessons',
-          },
         },
       },
       {
@@ -773,6 +764,7 @@ export class CourseService {
         },
       },
     ]);
+
     // console.log("🚀 ~ file: course.service.ts:665 ~ CourseService ~ getCoursePreview ~ sections", sections)
     course['sections'] = sections;
     // const quizIds: ObjectId[] = []
