@@ -1,41 +1,58 @@
+import { BalanceService } from '@/balance/balance.service';
 import { BlockService } from '@/block/block.service';
 import { CourseService } from '@/course/course.service';
+import { UserService } from '@/user/user.service';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { providers } from 'ethers';
 import { EventData } from 'web3-eth-contract';
 import { BaseCrawler } from './base.crawler';
-
+import courseDexApi from '@/config/abi/course';
+@Injectable()
 class CourseCrawler extends BaseCrawler {
-  blockService: BlockService;
-  courseService: CourseService;
   decimal = 10 ** 18;
 
   constructor(
-    _blockService: BlockService,
-    _courseService: CourseService,
-    provider: string,
-    contractAddress: string,
-    abi: any,
-    chainId: number,
-    startBlock: number,
-    name: string,
-    gapTime = 60000,
-    maxBlockRange = 3000,
+    private readonly blockService: BlockService,
+    private readonly courseService: CourseService,
+    private readonly balanceService: BalanceService,
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
   ) {
+    // const config = {
+    //   provider: String(this.configService.get('RPC_PROVIDER')),
+    //   contractAddress: String(this.configService.get('CONTRACT_ADDRESS')),
+    //   abi: courseDexApi,
+    //   chainId: Number(this.configService.get('CHAIN_ID')),
+    //   name: "Course dex crawler",
+    //   gapTime: 5000,
+    //   maxBlockRange: 100,
+    // }
     super(
-      provider,
-      contractAddress,
-      abi,
-      chainId,
-      startBlock,
-      name,
-      gapTime,
-      maxBlockRange,
+      String(configService.get('RPC_PROVIDER')),
+      String(configService.get('CONTRACT_ADDRESS')),
+      courseDexApi,
+      Number(configService.get('CHAIN_ID')),
+      'Course dex crawler',
+      60000,
+      100,
     );
-    this.blockService = _blockService;
-    this.courseService = _courseService;
   }
 
   async getNewestBlock(): Promise<number> {
     return await this.web3.eth.getBlockNumber();
+  }
+
+  async getLatestCrawledBlock(): Promise<number> {
+    const startBlock = this.configService.get('START_BLOCK');
+    const lastCrawlBlock = await this.blockService.getLatestBlockNumber(
+      Number(this.configService.get('CHAIN_ID')),
+      String(this.configService.get('CONTRACT_ADDRESS')),
+    );
+    if (startBlock > lastCrawlBlock) {
+      return startBlock; // first time
+    }
+    return lastCrawlBlock;
   }
 
   async handleEvent(event: EventData): Promise<void> {
@@ -116,8 +133,22 @@ class CourseCrawler extends BaseCrawler {
     const data = event.returnValues;
   }
 
-  private handleClaimRewardEvent(event: EventData) {
+  private async handleClaimRewardEvent(event: EventData) {
     const data = event.returnValues;
+    console.log(
+      '🚀 ~ file: course.crawler.ts:135 ~ CourseCrawler ~ handleClaimRewardEvent ~ data:',
+      data,
+    );
+    const user = await this.userService.findOneBy({
+      walletAddress: data.student,
+    });
+    if (!user) {
+      return;
+    }
+    await this.balanceService.downLockBalance(
+      user._id.toString(),
+      data.amount / this.decimal,
+    );
   }
 
   private async handleCoursePriceEditedEvent(event: EventData) {

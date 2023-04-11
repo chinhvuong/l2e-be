@@ -61,6 +61,23 @@ export class BalanceService {
     return rs;
   }
 
+  async downLockBalance(userId: string, amount: number) {
+    const rs = await this.model.findOneAndUpdate(
+      {
+        userId: userId,
+      },
+      {
+        $inc: { lockBalance: -amount },
+      },
+      {
+        new: true,
+        upsert: true,
+        clean: true,
+      },
+    );
+    return rs;
+  }
+
   async getUserBalance(userId: string) {
     const rs = await this.model.findOne({
       userId: userId,

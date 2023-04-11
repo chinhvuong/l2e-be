@@ -16,7 +16,8 @@ import { S3Module } from './s3/s3.module';
 import { GameModule } from './game/game.module';
 import { BalanceModule } from './balance/balance.module';
 import { RewardModule } from './reward/reward.module';
-
+import { CommandsModule } from './consoles/commands.module';
+// import { ConsoleModule } from 'nestjs-console';
 @Module({
   imports: [
     AuthModule,
@@ -37,6 +38,8 @@ import { RewardModule } from './reward/reward.module';
     GameModule,
     BalanceModule,
     RewardModule,
+
+    CommandsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

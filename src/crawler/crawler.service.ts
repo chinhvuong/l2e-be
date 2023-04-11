@@ -18,29 +18,29 @@ export class CrawlerService {
   }
 
   async courseCrawl() {
-    if (!this.crawling) {
-      const latestCrawlerBlock = await this.blockService.getLatestBlockNumber(
-        Number(this.configService.get('CHAIN_ID')),
-        String(this.configService.get('CONTRACT_ADDRESS')),
-      );
-      const startBlock = Math.max(
-        latestCrawlerBlock,
-        Number(this.configService.get('START_BLOCK')),
-      );
-      const crawler = new CourseCrawler(
-        this.blockService,
-        this.courseService,
-        String(this.configService.get('RPC_PROVIDER')),
-        String(this.configService.get('CONTRACT_ADDRESS')),
-        courseDexApi,
-        Number(this.configService.get('CHAIN_ID')),
-        startBlock,
-        'Course dex crawler',
-      );
-      this.crawling = true;
-      crawler.scan();
-      return 'Crawling';
-    }
-    return 'A crawl process is running';
+    //   if (!this.crawling) {
+    //     const latestCrawlerBlock = await this.blockService.getLatestBlockNumber(
+    //       Number(this.configService.get('CHAIN_ID')),
+    //       String(this.configService.get('CONTRACT_ADDRESS')),
+    //     );
+    //     const startBlock = Math.max(
+    //       latestCrawlerBlock,
+    //       Number(this.configService.get('START_BLOCK')),
+    //     );
+    //     const crawler = new CourseCrawler(
+    //       this.blockService,
+    //       this.courseService,
+    //       String(this.configService.get('RPC_PROVIDER')),
+    //       String(this.configService.get('CONTRACT_ADDRESS')),
+    //       courseDexApi,
+    //       Number(this.configService.get('CHAIN_ID')),
+    //       startBlock,
+    //       'Course dex crawler',
+    //     );
+    //     this.crawling = true;
+    //     crawler.scan();
+    //     return 'Crawling';
+    //   }
+    //   return 'A crawl process is running';
   }
 }

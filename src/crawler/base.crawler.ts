@@ -19,7 +19,6 @@ export abstract class BaseCrawler {
     contractAddress: string,
     abi: any,
     chainId: number,
-    startBlock: number,
     name: string,
     gapTime = 60000,
     maxBlockRange = 3000,
@@ -30,7 +29,7 @@ export abstract class BaseCrawler {
     this.chainId = chainId;
     this.web3 = new Web3(provider);
     this.web3Contract = new this.web3.eth.Contract(abi, contractAddress);
-    this.startBlock = startBlock;
+    // this.startBlock = startBlock;
     this.name = name;
     this.maxBlockRange = maxBlockRange;
     this.gapTime = gapTime;
@@ -75,19 +74,25 @@ export abstract class BaseCrawler {
   }
 
   async timeout(fn: Function) {
-    await fn();
-    await this.sleep(this.gapTime);
-    await this.timeout(fn);
+    while (true) {
+      await fn();
+      await this.sleep(this.gapTime);
+    }
   }
 
   abstract getNewestBlock(): Promise<number>;
+  abstract getLatestCrawledBlock(): Promise<number>;
 
   async scan() {
+    this.startBlock = await this.getLatestCrawledBlock();
+    console.log(
+      '🚀 ~ file: base.crawler.ts:89 ~ BaseCrawler ~ scan ~ startBlock:',
+      this.startBlock,
+    );
+
     await this.timeout(async () => {
       try {
         const newestBlock = await this.getNewestBlock();
-        console.log(this.startBlock, this.maxBlockRange);
-
         console.log(
           '🚀 ~ file: base.crawler.ts ~ line 75 ~ BaseCrawler ~ awaitthis.timeout ~ newestBlock',
           newestBlock,
@@ -96,6 +101,7 @@ export abstract class BaseCrawler {
           newestBlock,
           this.startBlock + this.maxBlockRange,
         );
+        // console.log("Start Block", this.startBlock, "to Block", toBlock);
         if (toBlock > this.startBlock) {
           await this.crawlBlock(this.startBlock, toBlock);
           this.startBlock = toBlock + 1;

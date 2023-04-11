@@ -18,7 +18,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "crawler": "NODE_ENV=crawler ts-node -r tsconfig-paths/register src/console.ts crawler"
   },
   "lint-staged": {
     "*.ts": [
@@ -43,6 +44,7 @@
     "lint-staged": "^13.0.3",
     "moment": "^2.29.4",
     "mongoose": "^6.6.1",
+    "nestjs-console": "^8.0.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
