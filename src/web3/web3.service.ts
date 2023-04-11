@@ -30,4 +30,27 @@ export class Web3Service {
     console.log('Signature:', sig);
     return sig;
   }
+
+  async signToClaimRewardToken(
+    amount: string,
+    nonce: number,
+    senderAddress: string,
+  ) {
+    const payload = ethers.utils.defaultAbiCoder.encode(
+      ['uint256', 'uint256', 'address', 'address'],
+      [
+        amount,
+        nonce,
+        senderAddress,
+        this.configService.get('CONTRACT_ADDRESS'),
+      ],
+    );
+    const payloadHash = ethers.utils.keccak256(payload);
+    const signature = await this.operator.signMessage(
+      ethers.utils.arrayify(payloadHash),
+    );
+    const sig = ethers.utils.splitSignature(signature);
+    console.log('Signature:', sig);
+    return sig;
+  }
 }

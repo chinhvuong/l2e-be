@@ -18,6 +18,7 @@ import { ConfigService } from '@nestjs/config';
 import { AnswerQuizDto, SubmitQuizDto } from './dtos/submit-quiz.dto';
 import { Question, QuestionSchema } from '@/question/schema/question.schema';
 import { retry } from 'rxjs';
+import { BalanceService } from '@/balance/balance.service';
 
 @Injectable()
 export class GameService {
@@ -26,6 +27,7 @@ export class GameService {
     private readonly courseService: CourseService,
     private readonly quizService: QuizService,
     private readonly configService: ConfigService,
+    private readonly balanceService: BalanceService,
   ) {}
 
   async playQuiz(user: UserDocument, quizId: string) {
@@ -88,6 +90,7 @@ export class GameService {
       // pass
       game.isPass = true;
       game.earn = 1;
+      await this.balanceService.upsertBalance(user._id.toString(), 1);
     }
 
     game.status = GAME_STATUS.COMPLETED;
@@ -99,7 +102,6 @@ export class GameService {
 
     return {
       ...game.toObject(),
-      questions: undefined,
     };
   }
   checkAnswer(answers: AnswerQuizDto[], questions: Question[]) {

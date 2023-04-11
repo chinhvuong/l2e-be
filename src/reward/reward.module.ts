@@ -1,4 +1,5 @@
 import { BalanceModule } from '@/balance/balance.module';
+import { Web3Module } from '@/web3/web3.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DailyReward, DailyRewardSchema } from './entities/daily-reward.schema';
@@ -11,6 +12,7 @@ import { RewardService } from './reward.service';
       { name: DailyReward.name, schema: DailyRewardSchema },
     ]),
     BalanceModule,
+    Web3Module,
   ],
   controllers: [RewardController],
   providers: [RewardService],

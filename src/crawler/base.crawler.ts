@@ -22,7 +22,7 @@ export abstract class BaseCrawler {
     startBlock: number,
     name: string,
     gapTime = 60000,
-    maxBlockRange = 30,
+    maxBlockRange = 3000,
   ) {
     this.provider = provider;
     this.contractAddress = contractAddress;

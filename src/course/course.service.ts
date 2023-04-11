@@ -28,6 +28,7 @@ import { ApproveFindAllDto } from './dto/approve-request-find-all.dto';
 import { Section, SectionDocument } from './schema/section.schema';
 import { ApproveRequestStatus } from './enum';
 import { Quiz, QuizDocument } from '@/question/schema/quiz.schema';
+import { convertPriceToBigNumber } from '@/common/helpers/convertPriceToBigNumber';
 
 @Injectable()
 export class CourseService {
@@ -455,10 +456,13 @@ export class CourseService {
 
     console.log(Number(this.configService.get('USDT_DECIMAL')));
 
-    const price =
-      course.price * 10 ** Number(this.configService.get('USDT_DECIMAL'));
+    const price = convertPriceToBigNumber(
+      course.price,
+      Number(this.configService.get('USDT_DECIMAL')),
+    ).toString();
+
     const signature = await this.web3Service.signToCreateCourse(
-      `${price}`,
+      price,
       user.nonce,
       user.walletAddress,
     );

@@ -14,9 +14,11 @@ async function bootstrap() {
     .setDescription('The L2E API description')
     .setVersion('1.0')
     .addTag('L2E')
+    .addServer('', 'http://localhost:3000')
+    .addServer('api', 'https://uchain.duckdns.org/api')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('/docs', app, document);
   // Global Validation Custom
   app.useGlobalPipes(
     new ValidationPipe({

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Balance, BalanceDocument } from './entities/balance.schema';
@@ -26,7 +26,7 @@ export class BalanceService {
   }
 
   async lockBalance(userId: string, amount: number) {
-    return this.model.findOneAndUpdate(
+    const rs = await this.model.findOneAndUpdate(
       {
         userId: userId,
       },
@@ -40,6 +40,25 @@ export class BalanceService {
         clean: true,
       },
     );
+    if (rs.balance < 0) {
+      await this.model.findOneAndUpdate(
+        {
+          userId: userId,
+        },
+        {
+          $inc: { lockBalance: -amount, balance: amount },
+          lastLock: new Date(),
+        },
+        {
+          new: true,
+          upsert: true,
+          clean: true,
+        },
+      );
+      throw new BadRequestException();
+    }
+
+    return rs;
   }
 
   async getUserBalance(userId: string) {
