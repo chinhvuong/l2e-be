@@ -15,7 +15,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('L2E')
     .addServer('', 'http://localhost:3000')
-    .addServer('api', 'https://uchain.duckdns.org/api')
+    .addServer('/api', 'https://uchain.duckdns.org')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);
