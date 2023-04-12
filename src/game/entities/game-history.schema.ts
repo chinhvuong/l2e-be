@@ -15,6 +15,9 @@ export class GameHistory {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Quiz' })
   quizId: string;
 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Course' })
+  courseId: string;
+
   @Prop({ default: [] })
   questions: Question[];
 
@@ -40,6 +43,11 @@ export class GameHistory {
 
   @Prop()
   isPass: boolean;
+
+  @Prop({
+    default: false,
+  })
+  isFinalTest: boolean;
 
   @Prop({ default: 0 })
   win_rate: number;

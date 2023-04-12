@@ -1,4 +1,5 @@
 import { BalanceModule } from '@/balance/balance.module';
+import { CertificateModule } from '@/certificate/certificate.module';
 import { CourseModule } from '@/course/course.module';
 import { QuestionModule } from '@/question/question.module';
 import { QuestionService } from '@/question/question.service';
@@ -16,6 +17,7 @@ import { GameService } from './game.service';
     QuestionModule,
     CourseModule,
     BalanceModule,
+    CertificateModule,
   ],
   providers: [GameService],
   controllers: [GameController],
