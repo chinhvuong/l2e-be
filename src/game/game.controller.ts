@@ -42,4 +42,24 @@ export class GameController {
   ) {
     return this.gameService.submitQuiz(user, data);
   }
+
+  @ApiBearerAuth()
+  @Post('play-final-test')
+  @UseGuards(JwtAuthGuard)
+  async playFinalTest(
+    @CurrentUser() user: UserDocument,
+    @Body() { id }: MongoIdDto,
+  ) {
+    return this.gameService.playFinalTest(user, id);
+  }
+
+  @ApiBearerAuth()
+  @Put('submit-final-test')
+  @UseGuards(JwtAuthGuard)
+  async submitFinalTest(
+    @CurrentUser() user: UserDocument,
+    @Body() data: SubmitQuizDto,
+  ) {
+    return this.gameService.submitFinalTest(user, data);
+  }
 }
