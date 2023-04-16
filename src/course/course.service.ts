@@ -841,11 +841,12 @@ export class CourseService {
 
           sections[i].lessons[j].quizzes = quizzesList;
         }
-        sections[i].lessons[j].learned = false;
+        sections[i].lessons[j].learned =
+          !!sections[i].lessons[j]?.quizzes[0].play;
       }
     }
 
-    console.log(course.finalTest?.['_id']);
+    // console.log(course.finalTest?.['_id']);
 
     if (course.finalTest?.['_id']) {
       const checkPlayFinalQuiz = await this.gameHistoryModel.findOne({
