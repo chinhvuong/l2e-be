@@ -8,6 +8,8 @@ import { providers } from 'ethers';
 import { EventData } from 'web3-eth-contract';
 import { BaseCrawler } from './base.crawler';
 import courseDexApi from '@/config/abi/course';
+import { CertificateService } from '@/certificate/certificate.service';
+import { CERTIFICATE_STATUS } from '@/certificate/enum';
 @Injectable()
 class CourseCrawler extends BaseCrawler {
   decimal = 10 ** 18;
@@ -18,6 +20,7 @@ class CourseCrawler extends BaseCrawler {
     private readonly balanceService: BalanceService,
     private readonly userService: UserService,
     private readonly configService: ConfigService,
+    private readonly certificateService: CertificateService,
   ) {
     // const config = {
     //   provider: String(this.configService.get('RPC_PROVIDER')),
@@ -131,6 +134,30 @@ class CourseCrawler extends BaseCrawler {
 
   private async handleClaimCertificateEvent(event: EventData) {
     const data = event.returnValues;
+    console.log(
+      '🚀 ~ file: course.crawler.ts:136 ~ CourseCrawler ~ handleClaimCertificateEvent ~ data:',
+      data,
+    );
+    //   event ClaimCertificate (
+    //     address indexed student,
+    //     uint256 courseId,
+    //     uint256 tokenId
+    // );
+    const user = await this.userService.findOneBy({
+      walletAddress: data.student,
+    });
+
+    if (!user) {
+      return;
+    }
+    const rs = await this.certificateService.updateCertificate(
+      user._id,
+      data.courseId,
+      {
+        tokenId: data.tokenId,
+        status: CERTIFICATE_STATUS.ON_CHAIN,
+      },
+    );
   }
 
   private async handleClaimRewardEvent(event: EventData) {

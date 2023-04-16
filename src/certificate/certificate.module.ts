@@ -1,3 +1,4 @@
+import { Web3Module } from '@/web3/web3.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CertificateController } from './certificate.controller';
@@ -9,6 +10,7 @@ import { Certificate, CertificateSchema } from './entities/certificate.schema';
     MongooseModule.forFeature([
       { name: Certificate.name, schema: CertificateSchema },
     ]),
+    Web3Module,
   ],
   controllers: [CertificateController],
   providers: [CertificateService],
