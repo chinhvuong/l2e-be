@@ -1,3 +1,7 @@
+import {
+  GameHistory,
+  GameHistorySchema,
+} from '@/game/entities/game-history.schema';
 import { QuestionModule } from '@/question/question.module';
 import { Quiz, QuizSchema } from '@/question/schema/quiz.schema';
 import { UserModule } from '@/user/user.module';
@@ -34,6 +38,7 @@ import { SectionService } from './section.service';
       { name: Enroll.name, schema: EnrollSchema },
       { name: RequestApprove.name, schema: RequestApproveSchema },
       { name: Quiz.name, schema: QuizSchema },
+      { name: GameHistory.name, schema: GameHistorySchema },
     ]),
     forwardRef(() => QuestionModule),
     UserModule,

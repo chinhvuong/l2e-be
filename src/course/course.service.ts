@@ -29,6 +29,10 @@ import { Section, SectionDocument } from './schema/section.schema';
 import { ApproveRequestStatus } from './enum';
 import { Quiz, QuizDocument } from '@/question/schema/quiz.schema';
 import { convertPriceToBigNumber } from '@/common/helpers/convertPriceToBigNumber';
+import {
+  GameHistory,
+  GameHistoryDocument,
+} from '@/game/entities/game-history.schema';
 
 @Injectable()
 export class CourseService {
@@ -39,6 +43,8 @@ export class CourseService {
     @InjectModel(Quiz.name) private quizModel: Model<QuizDocument>,
     @InjectModel(RequestApprove.name)
     private requestApproveModel: Model<RequestApproveDocument>,
+    @InjectModel(GameHistory.name)
+    private gameHistoryModel: Model<GameHistoryDocument>,
     private readonly categoryService: CategoryService,
     private readonly userService: UserService,
     private readonly web3Service: Web3Service,
@@ -725,15 +731,16 @@ export class CourseService {
   }
 
   async learnCourse(userId: string, courseId: string) {
-    const checkEnroll = await this.checkEnroll(userId, courseId);
-    if (!checkEnroll.enroll) {
-      throw new ForbiddenException();
-    }
+    // const checkEnroll = await this.checkEnroll(userId, courseId);
+    // if (!checkEnroll.enroll) {
+    //   throw new ForbiddenException();
+    // }
     const course = await this.model
       .findOne({
         _id: new ObjectId(courseId),
       })
-      .populate('finalTest');
+      .populate('finalTest')
+      .lean();
     if (!course) {
       throw new NotFoundException();
     }
@@ -793,6 +800,43 @@ export class CourseService {
                 },
               },
             },
+            {
+              $lookup: {
+                from: 'gamehistories',
+                let: { quizId: '$_id', userId: userId },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          { $eq: ['$quizId', '$$quizId'] },
+                          { $eq: ['$userId', '$$userId'] },
+                        ],
+                      },
+                    },
+                  },
+                ],
+                as: 'gameRecords',
+              },
+            },
+            {
+              $addFields: {
+                play: {
+                  $cond: [{ $gt: [{ $size: '$gameRecords' }, 0] }, true, false],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                questions: 1,
+                courseId: 1,
+                name: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                play: true,
+              },
+            },
           ]);
 
           sections[i].lessons[j].quizzes = quizzesList;
@@ -801,8 +845,18 @@ export class CourseService {
       }
     }
 
+    console.log(course.finalTest?.['_id']);
+
+    if (course.finalTest?.['_id']) {
+      const checkPlayFinalQuiz = await this.gameHistoryModel.findOne({
+        userId: userId,
+        quizId: course.finalTest?.['_id'],
+      });
+      course.finalTest['play'] = Boolean(checkPlayFinalQuiz);
+    }
+
     return {
-      ...course['_doc'],
+      ...course,
       sections,
     };
   }
