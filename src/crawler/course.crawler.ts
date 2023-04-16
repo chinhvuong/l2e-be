@@ -158,6 +158,7 @@ class CourseCrawler extends BaseCrawler {
         status: CERTIFICATE_STATUS.ON_CHAIN,
       },
     );
+    console.log(rs);
   }
 
   private async handleClaimRewardEvent(event: EventData) {

@@ -786,7 +786,7 @@ export class CourseService {
     //       quizIds.push(...sections[i].lessons.quizzes)
     //   }
     // }
-
+    let canPlayFinalTest = false;
     for (let i = 0; i < sections.length; i++) {
       for (let j = 0; j < sections[i].lessons.length; j++) {
         if (sections[i].lessons[j].quizzes?.length) {
@@ -839,6 +839,9 @@ export class CourseService {
             },
           ]);
 
+          if (!canPlayFinalTest) {
+            canPlayFinalTest = !quizzesList.some((q) => !q.play);
+          }
           sections[i].lessons[j].quizzes = quizzesList;
         }
         sections[i].lessons[j].learned =
@@ -857,6 +860,7 @@ export class CourseService {
     }
 
     return {
+      canPlayFinalTest,
       ...course,
       sections,
     };
