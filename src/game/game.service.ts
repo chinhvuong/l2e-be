@@ -126,6 +126,7 @@ export class GameService {
   async playFinalTest(user: UserDocument, courseId: string) {
     const isPlay = await this.model.findOne({
       courseId: new ObjectId(courseId),
+      userId: user._id,
       isFinalTest: true,
     });
     if (isPlay?._id) {
