@@ -44,7 +44,7 @@ export class CertificateService {
 
     const [data, total] = await Promise.all([
       query.exec(),
-      this.model.countDocuments(filter),
+      this.model.countDocuments(match),
     ]);
 
     return { total, data };

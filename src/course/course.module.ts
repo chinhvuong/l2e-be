@@ -12,11 +12,14 @@ import { AdminCourseController } from './admin-course.controller';
 import { AdminCourseService } from './admin-course.service';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
+import { CommentController } from './comment.controller';
+import { CommentService } from './comment.service';
 import { CourseController } from './course.controller';
 import { CourseService } from './course.service';
 import { LessonController } from './lession.controller';
 import { LessonService } from './lesson.service';
 import { Category, CategorySchema } from './schema/category.schema';
+import { Comment, CommentSchema } from './schema/comment.schema';
 import { Course, CourseSchema } from './schema/course.schema';
 import { Enroll, EnrollSchema } from './schema/enroll.schema.';
 import { Lesson, LessonSchema } from './schema/lesson.schema';
@@ -39,6 +42,7 @@ import { SectionService } from './section.service';
       { name: RequestApprove.name, schema: RequestApproveSchema },
       { name: Quiz.name, schema: QuizSchema },
       { name: GameHistory.name, schema: GameHistorySchema },
+      { name: Comment.name, schema: CommentSchema },
     ]),
     forwardRef(() => QuestionModule),
     UserModule,
@@ -50,6 +54,7 @@ import { SectionService } from './section.service';
     CategoryController,
     SectionController,
     LessonController,
+    CommentController,
   ],
   providers: [
     CourseService,
@@ -57,6 +62,7 @@ import { SectionService } from './section.service';
     SectionService,
     LessonService,
     AdminCourseService,
+    CommentService,
   ],
   exports: [
     CategoryService,
