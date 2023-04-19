@@ -103,7 +103,9 @@ export class CommentService {
       throw new ForbiddenException();
     }
 
-    const match = {};
+    const match = {
+      lesson: new ObjectId(filter.lessonId),
+    };
     if (filter.replyTo) {
       match['replyTo'] = new ObjectId(filter.replyTo);
       match['level'] = 2;
