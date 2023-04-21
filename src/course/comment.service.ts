@@ -64,9 +64,20 @@ export class CommentService {
         _id: new ObjectId(data.replyTo),
         level: 1,
       });
+      console.log(
+        '🚀 ~ file: comment.service.ts:67 ~ CommentService ~ create ~ parent:',
+        parent,
+      );
       if (!parent) {
         throw new BadRequestException('reply to not found');
       }
+      console.log({
+        ...data,
+        level: 2,
+        replyTo: parent._id,
+        user: user._id,
+      });
+
       const comment = await new this.model({
         ...data,
         level: 2,
@@ -164,9 +175,11 @@ export class CommentService {
       _id: new ObjectId(id),
       user: user._id,
     });
-    if (rs?.relyTo) {
+    console.log(rs);
+
+    if (rs?.replyTo) {
       const parent = await this.model.findOne({
-        _id: rs.relyTo,
+        _id: rs.replyTo,
       });
       if (parent?._id) {
         parent.replies = parent.replies.filter(

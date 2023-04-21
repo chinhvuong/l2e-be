@@ -28,8 +28,8 @@ export class Comment {
   @Prop({ default: 1 })
   level: number;
 
-  @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } })
-  relyTo: Comment;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' })
+  replyTo: Comment;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }] })
   replies: Comment[];
