@@ -20,6 +20,20 @@ export class BlockService {
     }).save();
   }
 
+  async upsertBlock(contract: string, chainId: number, data: Partial<Block>) {
+    return this.model.findOneAndUpdate(
+      {
+        contract: contract,
+        chainId: chainId,
+      },
+      data,
+      {
+        new: true,
+        upsert: true,
+      },
+    );
+  }
+
   async getLatestBlockNumber(chainId: number, contract: string) {
     const block = await this.model.findOne(
       {

@@ -196,10 +196,8 @@ class CourseCrawler extends BaseCrawler {
     contract: string,
     blockNumber: number,
   ): Promise<void> {
-    await this.blockService.createBlock({
-      chainId,
-      contract,
-      blockNumber,
+    await this.blockService.upsertBlock(contract, chainId, {
+      blockNumber: blockNumber,
     });
   }
 }
