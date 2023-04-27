@@ -1,9 +1,11 @@
+import { Balance, BalanceSchema } from '@/balance/entities/balance.schema';
 import { Course, CourseSchema } from '@/course/schema/course.schema';
 import { Rating, RatingSchema } from '@/course/schema/rating.schema';
 import { DynamicModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CalculateRating } from './calculate-rating.schedule';
+import { UnlockBalanceSchedule } from './unlock-balance.schedule';
 @Module({})
 export class JobModule {
   static register(): DynamicModule {
@@ -16,13 +18,14 @@ export class JobModule {
 
     return {
       module: JobModule,
-      providers: [CalculateRating],
+      providers: [CalculateRating, UnlockBalanceSchedule],
       controllers: [],
       imports: [
         ScheduleModule.forRoot(),
         MongooseModule.forFeature([
           { name: Course.name, schema: CourseSchema },
           { name: Rating.name, schema: RatingSchema },
+          { name: Balance.name, schema: BalanceSchema },
         ]),
       ],
     };
