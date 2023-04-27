@@ -14,9 +14,8 @@ import { RatingListDto } from './dto/rating-list.dto';
 export class RatingService {
   constructor(
     @InjectModel(Rating.name) private modelRating: Model<RatingDocument>,
-    @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>, // @InjectModel(Quiz.name) private quizModel: Model<QuizDocument>,
-  ) // private readonly configService: ConfigService,
-  {}
+    @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>, // @InjectModel(Quiz.name) private quizModel: Model<QuizDocument>, // private readonly configService: ConfigService,
+  ) {}
 
   async list(filter: RatingListDto) {
     const match = {
