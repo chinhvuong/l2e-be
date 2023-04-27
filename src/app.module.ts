@@ -18,6 +18,7 @@ import { RewardModule } from './reward/reward.module';
 import { CommandsModule } from './consoles/commands.module';
 // import { ConsoleModule } from 'nestjs-console';
 import { CertificateModule } from './certificate/certificate.module';
+import { JobModule } from './job/job.module';
 @Module({
   imports: [
     AuthModule,
@@ -37,10 +38,9 @@ import { CertificateModule } from './certificate/certificate.module';
     GameModule,
     BalanceModule,
     RewardModule,
-
     CommandsModule,
-
     CertificateModule,
+    JobModule.register(),
   ],
   controllers: [AppController],
   providers: [AppService],
