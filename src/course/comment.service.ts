@@ -28,8 +28,8 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 export class CommentService {
   constructor(
     @InjectModel(Comment.name) private model: Model<CommentDocument>,
-    @InjectModel(Course.name) private courseModel: Model<CourseDocument>,
-    @InjectModel(Section.name) private sectionModel: Model<SectionDocument>,
+    // @InjectModel(Course.name) private courseModel: Model<CourseDocument>,
+    // @InjectModel(Section.name) private sectionModel: Model<SectionDocument>,
     @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>,
     @InjectModel(Lesson.name) private lessonModel: Model<LessonDocument>,
     @InjectModel(RequestApprove.name)
@@ -126,7 +126,13 @@ export class CommentService {
     const query = this.model
       .find(match)
       .populate('user')
-      .populate('replies')
+      .populate({
+        path: 'replies',
+        populate: {
+          path: 'user',
+          // model: ''
+        },
+      })
       .sort({
         _id: 1,
       });
