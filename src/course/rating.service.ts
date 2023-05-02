@@ -24,6 +24,11 @@ export class RatingService {
     if (filter.rating) {
       match['rating'] = filter.rating;
     }
+
+    if (filter.query) {
+      match['content'] = { $regex: new RegExp(filter.query, 'i') };
+    }
+
     const query = this.modelRating.find(match).populate('user').sort({
       _id: 1,
     });

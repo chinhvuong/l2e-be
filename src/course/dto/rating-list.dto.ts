@@ -1,13 +1,25 @@
 import { PaginationDto } from '@/common/dto/pagination.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsMongoId, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import {
+  IsMongoId,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class RatingListDto extends PaginationDto {
   @ApiProperty()
   @IsOptional()
   @IsMongoId()
   course: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  query: string;
 
   @ApiPropertyOptional()
   @IsOptional()
