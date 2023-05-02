@@ -328,7 +328,7 @@ export class CourseService {
         $lookup: {
           from: 'ratings',
           localField: '_id',
-          foreignField: 'courseId',
+          foreignField: 'course',
           as: 'ratings',
         },
       },
@@ -574,7 +574,7 @@ export class CourseService {
         $lookup: {
           from: 'ratings',
           localField: '_id',
-          foreignField: 'courseId',
+          foreignField: 'course',
           as: 'ratings',
         },
       },
@@ -637,7 +637,7 @@ export class CourseService {
         $lookup: {
           from: 'ratings',
           localField: '_id',
-          foreignField: 'courseId',
+          foreignField: 'course',
           as: 'ratings',
         },
       },
