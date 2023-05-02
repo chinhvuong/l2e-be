@@ -76,7 +76,7 @@ export class RatingService {
         _id: new ObjectId(id),
       },
       {
-        data,
+        ...data,
       },
       {
         new: true,
