@@ -104,4 +104,41 @@ export class RatingService {
       success: Boolean(rs),
     };
   }
+
+  async ratingOverview(id: string) {
+    const _id = new ObjectId(id);
+    const [one, two, three, four, five] = await Promise.all([
+      this.modelRating.count({
+        course: _id,
+        rating: 1,
+      }),
+      this.modelRating.count({
+        course: _id,
+        rating: 2,
+      }),
+      this.modelRating.count({
+        course: _id,
+        rating: 3,
+      }),
+      this.modelRating.count({
+        course: _id,
+        rating: 4,
+      }),
+      this.modelRating.count({
+        course: _id,
+        rating: 5,
+      }),
+    ]);
+
+    return {
+      one,
+      two,
+      three,
+      four,
+      five,
+      overview:
+        (one + two * 2 + three * 3 + four * 4 + five * 5) /
+        (one + two + three + four + five),
+    };
+  }
 }

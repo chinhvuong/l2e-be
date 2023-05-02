@@ -37,6 +37,16 @@ export class RatingController {
     return this.ratingService.list(data);
   }
 
+  // @ApiBearerAuth()
+  @Get('rating-overview')
+  // @UseGuards(JwtAuthGuard)
+  async getRatingOverview(
+    // @CurrentUser() user: UserDocument,
+    @Query() { id }: MongoIdDto,
+  ) {
+    return this.ratingService.ratingOverview(id);
+  }
+
   @ApiBearerAuth()
   @Post('create')
   @UseGuards(JwtAuthGuard)
