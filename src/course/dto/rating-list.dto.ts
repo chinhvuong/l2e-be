@@ -16,7 +16,7 @@ export class RatingListDto extends PaginationDto {
   @IsMongoId()
   course: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   query: string;
