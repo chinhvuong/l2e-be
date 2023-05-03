@@ -31,13 +31,7 @@ export class CalculateRating {
               course: course._id,
             },
           },
-          {
-            $project: {
-              rate: {
-                $avg: '$rating',
-              },
-            },
-          },
+          { $group: { _id: '$course', rate: { $avg: '$rating' } } },
         ]);
         console.log(
           '🚀 ~ file: calculate-rating.schedule.ts:41 ~ CalculateRating ~ handleCron ~ statistic:',
