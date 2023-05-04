@@ -746,6 +746,26 @@ export class CourseService {
     if (!course) {
       throw new NotFoundException();
     }
+    const author = await this.userService.findOneBy(
+      {
+        walletAddress: course.author,
+      },
+      {
+        _id: true,
+        avatar: true,
+        bio: true,
+        createdAt: true,
+        name: true,
+        nonce: true,
+        rating: true,
+        title: true,
+        updatedAt: true,
+        walletAddress: true,
+      },
+      {
+        lean: true,
+      },
+    );
     const sections = await this.sectionModel.aggregate([
       {
         $match: {
@@ -865,6 +885,7 @@ export class CourseService {
       canPlayFinalTest,
       ...course,
       sections,
+      author,
     };
   }
 }
