@@ -660,6 +660,7 @@ export class CourseService {
       {
         $project: {
           name: 1,
+          owner: 1,
           description: 1,
           overview: 1,
           promotionalVideo: 1,
