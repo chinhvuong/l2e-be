@@ -26,37 +26,99 @@ export class CertificateService {
   }
 
   async list(filter: CertificateListDto) {
-    const match: any = {};
+    const pipeline: any[] = [];
+
     if (filter.userId) {
-      match['user'] = new ObjectId(filter.userId);
+      pipeline.push({ $match: { user: new ObjectId(filter.userId) } });
     }
 
     if (filter.courseId) {
-      match['courseId'] = filter.courseId;
+      pipeline.push({ $match: { courseId: filter.courseId } });
     }
 
     if (filter.query) {
-      match['course.name'] = {
-        $regex: new RegExp(filter.query, 'i'),
-      };
+      pipeline.push({
+        $lookup: {
+          from: 'courses',
+          let: { courseId: '$course' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$_id', '$$courseId'] },
+                    {
+                      $regexMatch: {
+                        input: '$name',
+                        regex: filter.query,
+                        options: 'i',
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+          as: 'course',
+        },
+      });
+
+      pipeline.push({ $unwind: '$course' });
+    } else {
+      pipeline.push({
+        $lookup: {
+          from: 'courses',
+          localField: 'course',
+          foreignField: '_id',
+          as: 'course',
+        },
+      });
+
+      pipeline.push({ $unwind: '$course' });
     }
 
-    console.log(match);
-    const query = this.model
-      .find(match)
-      .populate('user')
-      .populate('course', '_id name courseId');
+    pipeline.push({
+      $lookup: {
+        from: 'users',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user',
+      },
+    });
+
+    pipeline.push({ $unwind: '$user' });
+
+    const countPipeline = [...pipeline, { $count: 'total' }];
+
+    if (filter.page && filter.limit) {
+      pipeline.push({ $skip: filter.page * filter.limit });
+    }
 
     if (filter.limit > 0) {
-      query.limit(filter.limit);
+      pipeline.push({ $limit: filter.limit });
+    }
+    const sort: { [key: string]: 1 | -1 } = {};
+    // sort
+    if (filter?.sort?.length) {
+      for (let i = 0; i < filter?.sort?.length; i++) {
+        const [attr, direction] = filter.sort[i].split(':');
+        if (direction === '-1') {
+          sort[attr] = -1;
+        } else {
+          sort[attr] = 1;
+        }
+      }
+    } else {
+      // price desc
+      sort.createdAt = -1;
     }
 
-    console.log(query);
-
-    const [data, total] = await Promise.all([
-      query.exec(),
-      this.model.countDocuments(match),
+    const [data, [result]] = await Promise.all([
+      this.model.aggregate([...pipeline, { $sort: sort }]).exec(),
+      this.model.aggregate(countPipeline).exec(),
     ]);
+
+    const total = result ? result.total : 0;
 
     return { total, data };
   }
