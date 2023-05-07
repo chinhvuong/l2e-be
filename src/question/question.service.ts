@@ -108,7 +108,7 @@ export class QuestionService {
     };
 
     if (data.query) {
-      match.name = {
+      match.question = {
         $regex: new RegExp(data.query, 'i'),
       };
     }
