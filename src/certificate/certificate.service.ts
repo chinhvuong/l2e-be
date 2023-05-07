@@ -26,21 +26,32 @@ export class CertificateService {
   }
 
   async list(filter: CertificateListDto) {
-    const match = {};
+    const match: any = {};
     if (filter.userId) {
       match['user'] = new ObjectId(filter.userId);
     }
+
+    if (filter.courseId) {
+      match['courseId'] = filter.courseId;
+    }
+
+    if (filter.query) {
+      match['course.name'] = {
+        $regex: new RegExp(filter.query, 'i'),
+      };
+    }
+
+    console.log(match);
     const query = this.model
       .find(match)
       .populate('user')
       .populate('course', '_id name courseId');
 
-    if (filter.page && filter.limit) {
-      query.skip(filter.page * filter.limit);
-    }
     if (filter.limit > 0) {
       query.limit(filter.limit);
     }
+
+    console.log(query);
 
     const [data, total] = await Promise.all([
       query.exec(),

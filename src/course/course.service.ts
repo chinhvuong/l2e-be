@@ -532,6 +532,14 @@ export class CourseService {
       match.category = new ObjectId(data.category);
     }
 
+    if (data.owner) {
+      match.owner = data.owner;
+    }
+
+    if (data.author) {
+      match.author = data.author;
+    }
+
     const pagination: any[] = [];
     if (data.page !== undefined && data.limit !== undefined) {
       pagination.push({

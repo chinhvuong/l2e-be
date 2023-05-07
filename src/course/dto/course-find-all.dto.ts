@@ -4,6 +4,7 @@ import {
   IsArray,
   IsEnum,
   IsMongoId,
+  IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -67,6 +68,22 @@ export class CourseFindAllDto {
   @IsString()
   @IsMongoId()
   category: string;
+
+  @ApiPropertyOptional({
+    description: 'Search by owner of course',
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  owner: string;
+
+  @ApiPropertyOptional({
+    description: 'Search by author of course',
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  author: string;
 
   @ApiPropertyOptional()
   @IsOptional()
