@@ -108,7 +108,9 @@ export class QuestionService {
     };
 
     if (data.query) {
-      match.name = new RegExp(data.query, 'i');
+      match.name = {
+        $regex: new RegExp(data.query, 'i'),
+      };
     }
     const pagination: any[] = [];
     if (data.page !== undefined && data.limit !== undefined) {
