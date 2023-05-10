@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -14,6 +15,7 @@ import { UserService } from './user.service';
 import { JwtAuthGuard } from '@/auth/strategies/jwt-auth.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { MongoIdDto } from '@/common/dto/mongo-id.dto';
+import { AdminFindAllUserDto } from './dto/admin-find-all.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -49,6 +51,19 @@ export class UserController {
   @Get(':id')
   async profile(@Param() { id }: MongoIdDto) {
     return this.userService.getUserProfile(id);
+    // return {
+    //   ...user['_doc'],
+    //   isAdmin: Boolean(
+    //     process.env.ADMIN_ADDRESS?.split(' ')
+    //       .map((address) => address.toLowerCase())
+    //       .includes(user.walletAddress.toLowerCase()),
+    //   ),
+    // };
+  }
+
+  @Get('')
+  async list(@Query() data: AdminFindAllUserDto) {
+    return this.userService.list(data);
     // return {
     //   ...user['_doc'],
     //   isAdmin: Boolean(
