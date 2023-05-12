@@ -135,6 +135,8 @@ export class RatingService {
       }),
     ]);
 
+    const total = one + two + three + four + five;
+
     return {
       one,
       two,
@@ -142,8 +144,9 @@ export class RatingService {
       four,
       five,
       overview:
-        (one + two * 2 + three * 3 + four * 4 + five * 5) /
-        (one + two + three + four + five),
+        total === 0
+          ? 5
+          : (one + two * 2 + three * 3 + four * 4 + five * 5) / total,
     };
   }
 }
