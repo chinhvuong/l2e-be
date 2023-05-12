@@ -125,26 +125,27 @@ export class CourseService {
       if (course.owner.toLowerCase() !== user.walletAddress.toLowerCase()) {
         throw new HttpException('Permission denied', HttpStatus.FORBIDDEN);
       }
+
       if (data.finalTest) {
         const finalTest = await this.quizModel.findOne({
           _id: new ObjectId(data.finalTest),
           courseId: new ObjectId(courseId),
         });
         if (finalTest) {
-          data.finalTest = finalTest._id;
+          data.finalTest = finalTest?._id;
         }
       }
-      const rs: any = await this.model.findOneAndUpdate(
-        { _id: new ObjectId(courseId) },
-        data,
-        { new: true },
-      );
+      const rs: any = await this.model
+        .findOneAndUpdate({ _id: new ObjectId(courseId) }, data, { new: true })
+        .populate('finalTest');
       const approveRequest = await this.requestApproveModel.findOne({
         courseId: course._id,
       });
+
       if (approveRequest) {
         return {
           ...rs['_doc'],
+
           lastApproveRequestAt: approveRequest.lastRequestAt,
         };
       }
