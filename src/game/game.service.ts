@@ -53,13 +53,13 @@ export class GameService {
     if (!enroll) {
       throw new ForbiddenException();
     }
-    const course = await this.courseService.findOne({
-      _id: quiz.courseId,
-      finalTest: quiz._id,
-    });
-    if (course) {
-      throw new ForbiddenException();
-    }
+    // const course = await this.courseService.findOne({
+    //   _id: quiz.courseId,
+    //   finalTest: quiz._id,
+    // });
+    // if (course) {
+    //   throw new ForbiddenException();
+    // }
 
     const game = await new this.model({
       courseId: quiz.courseId,

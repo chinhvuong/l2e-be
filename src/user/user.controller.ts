@@ -64,13 +64,5 @@ export class UserController {
   @Get('')
   async list(@Query() data: AdminFindAllUserDto) {
     return this.userService.list(data);
-    // return {
-    //   ...user['_doc'],
-    //   isAdmin: Boolean(
-    //     process.env.ADMIN_ADDRESS?.split(' ')
-    //       .map((address) => address.toLowerCase())
-    //       .includes(user.walletAddress.toLowerCase()),
-    //   ),
-    // };
   }
 }
