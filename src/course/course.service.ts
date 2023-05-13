@@ -841,6 +841,7 @@ export class CourseService {
                     $match: {
                       $expr: {
                         $and: [
+                          { $eq: ['$isFinalTest', true] },
                           { $eq: ['$quizId', '$$quizId'] },
                           { $eq: ['$userId', '$$userId'] },
                         ],
