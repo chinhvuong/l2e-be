@@ -841,7 +841,7 @@ export class CourseService {
                     $match: {
                       $expr: {
                         $and: [
-                          { $eq: ['$isFinalTest', true] },
+                          { $eq: ['$isFinalTest', false] },
                           { $eq: ['$quizId', '$$quizId'] },
                           { $eq: ['$userId', '$$userId'] },
                         ],
@@ -888,6 +888,7 @@ export class CourseService {
       const checkPlayFinalQuiz = await this.gameHistoryModel.findOne({
         userId: userId,
         quizId: course.finalTest?.['_id'],
+        isFinalTest: true,
       });
       course.finalTest['play'] = Boolean(checkPlayFinalQuiz);
     }
