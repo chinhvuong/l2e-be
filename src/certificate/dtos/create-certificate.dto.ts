@@ -6,4 +6,5 @@ export class CreateCertificateDto {
   courseId: number;
   finalGrade: number;
   graduation: GRADUATION_TYPE;
+  image: null | string;
 }

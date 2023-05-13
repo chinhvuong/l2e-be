@@ -217,6 +217,7 @@ export class GameService {
         graduation: this.graduation(correct / game.questions.length),
         finalGrade: (correct * 100) / game.questions.length,
         courseId: course ? course.courseId : 0,
+        image: null,
       });
     }
 
