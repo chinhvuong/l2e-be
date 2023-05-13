@@ -19,7 +19,7 @@ export class Certificate {
   @Prop({ required: true })
   courseId: number;
 
-  @Prop()
+  @Prop({ default: null })
   image: string;
 
   @Prop()
