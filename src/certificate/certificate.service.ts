@@ -155,6 +155,7 @@ export class CertificateService {
       },
       {
         status: CERTIFICATE_STATUS.MINTING,
+        lastLock: new Date(),
       },
       {
         new: true,

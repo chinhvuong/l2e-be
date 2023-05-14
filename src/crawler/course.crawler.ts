@@ -37,7 +37,7 @@ class CourseCrawler extends BaseCrawler {
       courseDexApi,
       Number(configService.get('CHAIN_ID')),
       'Course dex crawler',
-      60000,
+      5000,
       100,
     );
   }

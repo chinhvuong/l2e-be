@@ -20,7 +20,7 @@ export abstract class BaseCrawler {
     abi: any,
     chainId: number,
     name: string,
-    gapTime = 60000,
+    gapTime = 6000,
     maxBlockRange = 3000,
   ) {
     this.provider = provider;

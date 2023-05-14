@@ -37,6 +37,11 @@ export class Certificate {
     default: CERTIFICATE_STATUS.OFF_CHAIN,
   })
   status: CERTIFICATE_STATUS;
+
+  @Prop({
+    default: CERTIFICATE_STATUS.OFF_CHAIN,
+  })
+  lastLock: Date;
 }
 
 export const CertificateSchema = SchemaFactory.createForClass(Certificate);
