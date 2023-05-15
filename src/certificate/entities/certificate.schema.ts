@@ -39,7 +39,7 @@ export class Certificate {
   status: CERTIFICATE_STATUS;
 
   @Prop({
-    default: CERTIFICATE_STATUS.OFF_CHAIN,
+    default: null,
   })
   lastLock: Date;
 }
