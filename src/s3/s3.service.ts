@@ -49,4 +49,18 @@ export class S3Service {
       throw error;
     }
   }
+
+  async uploadCert(fileName: string, content: string) {
+    try {
+      const params = {
+        Bucket: this.bucket,
+        ACL: 'public-read',
+        Key: fileName,
+        Body: content,
+      };
+      return await this.s3.upload(params).promise();
+    } catch (error) {
+      console.log('🚀 ~ file: s3.service.ts:63 ~ uploadCert ~ error:', error);
+    }
+  }
 }

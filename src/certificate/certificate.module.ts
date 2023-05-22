@@ -1,3 +1,4 @@
+import { S3Module } from '@/s3/s3.module';
 import { Web3Module } from '@/web3/web3.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,6 +12,7 @@ import { Certificate, CertificateSchema } from './entities/certificate.schema';
       { name: Certificate.name, schema: CertificateSchema },
     ]),
     Web3Module,
+    S3Module,
   ],
   controllers: [CertificateController],
   providers: [CertificateService],

@@ -12,6 +12,8 @@ import { ObjectId } from 'mongodb';
 import { CERTIFICATE_STATUS } from './enum';
 import { UserDocument } from '@/user/schema/user.schema';
 import { Web3Service } from '@/web3/web3.service';
+import { CERTIFICATE_TEMPLATE } from './constants';
+import { S3Service } from '@/s3/s3.service';
 
 @Injectable()
 export class CertificateService {
@@ -19,10 +21,13 @@ export class CertificateService {
     @InjectModel(Certificate.name) private model: Model<CertificateDocument>,
     private readonly configService: ConfigService,
     private readonly web3Service: Web3Service,
+    private readonly s3Service: S3Service,
   ) {}
 
   async create(data: CreateCertificateDto) {
-    return await new this.model(data).save();
+    const rs = await new this.model(data).save();
+    this.createCertificateFile(rs._id);
+    return rs;
   }
 
   async list(filter: CertificateListDto) {
@@ -200,5 +205,39 @@ export class CertificateService {
       s: signature.s,
       nonce: user.nonce - 1,
     };
+  }
+
+  async createCertificateFile(id: string) {
+    const cert = await this.model
+      .findOne({
+        _id: new ObjectId(id),
+      })
+      .populate('course')
+      .populate('user');
+    console.log(
+      '🚀 ~ file: certificate.service.ts:209 ~ CertificateService ~ createCertificateFile ~ cert:',
+      cert?.user.name,
+    );
+    if (!cert || cert.image) {
+      return cert;
+    }
+    const data = {
+      courseName: cert?.course.name,
+      fullName: cert.user.name ? cert.user.name : cert.user.walletAddress,
+    };
+    let content = CERTIFICATE_TEMPLATE;
+    for (const key in data) {
+      content = content.replace(key, data[key]);
+    }
+    const rs = await this.s3Service.uploadCert(
+      `${data.fullName.trim()}-${cert.courseId}.svg`,
+      content,
+    );
+    if (!rs) {
+      return;
+    }
+    cert.image = rs.Location;
+    await cert.save();
+    return rs;
   }
 }

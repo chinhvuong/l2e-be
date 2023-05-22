@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '@/auth/strategies/jwt-auth.guard';
 import { UserDocument } from '@/user/schema/user.schema';
 import { CurrentUser } from '@/common/helpers/user.decorator';
 import { ClaimCertificateDto } from './dtos/claim-certificate.dto';
+import { MongoIdDto } from '@/common/dto/mongo-id.dto';
 
 @ApiTags('Certificate')
 @Controller('certificate')
@@ -26,5 +27,12 @@ export class CertificateController {
     @Body() { courseId }: ClaimCertificateDto,
   ) {
     return this.certificateService.claimCertificate(user, courseId);
+  }
+
+  // @ApiBearerAuth()
+  @Post('test-upload')
+  // @UseGuards(JwtAuthGuard)
+  async testUploadCertificate(@Query() { id }: MongoIdDto) {
+    return this.certificateService.createCertificateFile(id);
   }
 }
