@@ -58,6 +58,15 @@ export class CertificateService {
                 },
               },
             },
+            {
+              $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'category',
+              },
+            },
+            { $unwind: '$category' },
           ],
           as: 'course',
         },
@@ -75,6 +84,17 @@ export class CertificateService {
       });
 
       pipeline.push({ $unwind: '$course' });
+
+      pipeline.push({
+        $lookup: {
+          from: 'categories',
+          localField: 'course.category',
+          foreignField: '_id',
+          as: 'course.category',
+        },
+      });
+
+      pipeline.push({ $unwind: '$course.category' });
     }
 
     pipeline.push({
