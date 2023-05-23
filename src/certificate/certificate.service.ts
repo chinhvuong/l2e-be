@@ -218,7 +218,7 @@ export class CertificateService {
       '🚀 ~ file: certificate.service.ts:209 ~ CertificateService ~ createCertificateFile ~ cert:',
       cert?.user.name,
     );
-    if (!cert || cert.image) {
+    if (!cert) {
       return cert;
     }
     const data = {
@@ -229,6 +229,7 @@ export class CertificateService {
     for (const key in data) {
       content = content.replace(key, data[key]);
     }
+
     const rs = await this.s3Service.uploadCert(
       `${data.fullName.trim()}-${cert.courseId}.svg`,
       content,

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import * as url from 'url';
 import * as path from 'path';
+import svg2img from 'svg2img';
 
 // const dotenv = require('dotenv');
 // dotenv.config()
@@ -52,11 +53,31 @@ export class S3Service {
 
   async uploadCert(fileName: string, content: string) {
     try {
+      // const buffer: Buffer = await new Promise((resolve, reject) => {
+
+      //   svg2img(content,
+
+      //     {          // @ts-ignore
+      //       'format': 'jpg', 'quality': 100, resvg: {
+      //         fitTo: { mode: 'original' }, dpi: 100, font: {
+      //           fontDirs: ['fonts']
+      //         }
+      //       }
+      //     }, function (error, buffer) {
+      //       //default jpeg quality is 75
+      //       if (error) {
+      //         reject(error)
+      //       }
+      //       resolve(buffer)
+      //     })
+      // });
+
       const params = {
         Bucket: this.bucket,
         ACL: 'public-read',
         Key: fileName,
         Body: content,
+        ContentType: 'image/svg+xml',
       };
       return await this.s3.upload(params).promise();
     } catch (error) {
