@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import * as url from 'url';
 import * as path from 'path';
-import svg2img from 'svg2img';
 
 // const dotenv = require('dotenv');
 // dotenv.config()
