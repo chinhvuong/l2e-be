@@ -451,6 +451,7 @@ export class CourseService {
       return await new this.enrollModel({
         courseId: course._id,
         userId: user._id,
+        price: course.price,
       }).save();
     }
   }

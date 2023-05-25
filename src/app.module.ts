@@ -19,6 +19,7 @@ import { CommandsModule } from './consoles/commands.module';
 // import { ConsoleModule } from 'nestjs-console';
 import { CertificateModule } from './certificate/certificate.module';
 import { JobModule } from './job/job.module';
+import { StatisticModule } from './statistic/statistic.module';
 @Module({
   imports: [
     AuthModule,
@@ -41,6 +42,7 @@ import { JobModule } from './job/job.module';
     CommandsModule,
     CertificateModule,
     JobModule.register(),
+    StatisticModule,
   ],
   controllers: [AppController],
   providers: [AppService],

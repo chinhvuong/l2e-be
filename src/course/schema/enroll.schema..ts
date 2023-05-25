@@ -13,6 +13,9 @@ export class Enroll {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   userId: User;
+
+  @Prop({ default: 0 })
+  price: number;
 }
 
 export const EnrollSchema = SchemaFactory.createForClass(Enroll);
