@@ -42,7 +42,7 @@ import { StatisticModule } from './statistic/statistic.module';
     CommandsModule,
     CertificateModule,
     JobModule.register(),
-    StatisticModule,
+    StatisticModule.register(),
   ],
   controllers: [AppController],
   providers: [AppService],
