@@ -300,8 +300,6 @@ export class AdminCourseService {
           ]);
           sections[i].lessons[j].quizzes = quizzesList;
         }
-        sections[i].lessons[j].learned =
-          !!sections[i].lessons[j]?.quizzes[0].play;
       }
     }
 
