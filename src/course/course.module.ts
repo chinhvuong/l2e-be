@@ -3,6 +3,7 @@ import {
   GameHistorySchema,
 } from '@/game/entities/game-history.schema';
 import { QuestionModule } from '@/question/question.module';
+import { Question, QuestionSchema } from '@/question/schema/question.schema';
 import { Quiz, QuizSchema } from '@/question/schema/quiz.schema';
 import { UserModule } from '@/user/user.module';
 import { Web3Module } from '@/web3/web3.module';
@@ -44,6 +45,7 @@ import { SectionService } from './section.service';
       { name: Enroll.name, schema: EnrollSchema },
       { name: RequestApprove.name, schema: RequestApproveSchema },
       { name: Quiz.name, schema: QuizSchema },
+      { name: Question.name, schema: QuestionSchema },
       { name: GameHistory.name, schema: GameHistorySchema },
       { name: Comment.name, schema: CommentSchema },
       { name: Rating.name, schema: RatingSchema },
