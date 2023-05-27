@@ -165,6 +165,44 @@ export class StatisticService {
     };
   }
 
+  async userStatistic() {
+    const [total, courseZero] = await Promise.all([
+      this.userModel.count(),
+      this.countUsersWithoutCourse(),
+    ]);
+
+    return {
+      total,
+      courseZero,
+      courseCreator: total - courseZero,
+    };
+  }
+
+  async countUsersWithoutCourse(): Promise<number> {
+    const count = await this.userModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'courses',
+            localField: 'walletAddress',
+            foreignField: 'author',
+            as: 'createdCourses',
+          },
+        },
+        {
+          $match: {
+            createdCourses: { $size: 0 },
+          },
+        },
+        {
+          $count: 'count',
+        },
+      ])
+      .exec();
+
+    return count[0]?.count || 0;
+  }
+
   async handleStatistic() {
     const stats = await this.statisticModel.find();
     return await Promise.all(

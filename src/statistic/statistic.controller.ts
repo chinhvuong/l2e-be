@@ -29,6 +29,14 @@ export class StatisticController {
   async getCourseStatistic() {
     return this.statisticService.courseStatistic();
   }
+
+  @Get('user')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, SupperAdmin)
+  async getUserStatistic() {
+    return this.statisticService.userStatistic();
+  }
+
   @Get('handle-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, SupperAdmin)
