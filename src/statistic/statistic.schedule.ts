@@ -33,7 +33,7 @@ export class AggregateStatistic {
       courseCount,
       userCount,
       certificateCount,
-      date: start,
+      time: start,
     }).save();
   }
 

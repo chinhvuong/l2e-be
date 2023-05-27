@@ -83,4 +83,11 @@ export class AdminCourseController {
   ) {
     return this.courseService.toggleApproveCourse(id);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, SupperAdmin)
+  @Get(':id/enroll-users')
+  async getUserEnrollCourse(@Param() { id }: CourseIdDto) {
+    return this.courseService.getEnrollUsers(id);
+  }
 }

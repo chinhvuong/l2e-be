@@ -19,6 +19,7 @@ import {
 } from './schema/request-aprrove.schema';
 import { ApproveFindAllDto } from './dto/approve-request-find-all.dto';
 import { ResolveApproveRequestDto } from './dto/resolve-approve-request.dto';
+import { Enroll, EnrollDocument } from './schema/enroll.schema.';
 
 @Injectable()
 export class AdminCourseService {
@@ -27,6 +28,7 @@ export class AdminCourseService {
     private model: Model<CourseDocument>,
     @InjectModel(RequestApprove.name)
     private requestApproveModel: Model<RequestApproveDocument>,
+    @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>,
     private readonly categoryService: CategoryService,
   ) {}
 
@@ -211,5 +213,15 @@ export class AdminCourseService {
     }
     course.approved = !course.approved;
     return await course.save();
+  }
+
+  async getEnrollUsers(courseId: string) {
+    const rs = await this.enrollModel
+      .find({
+        courseId: new ObjectId(courseId),
+      })
+      .populate('userId')
+      .sort({ createdAt: -1 });
+    return rs.map((e) => e.userId);
   }
 }
