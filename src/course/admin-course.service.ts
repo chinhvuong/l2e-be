@@ -22,6 +22,7 @@ import { ResolveApproveRequestDto } from './dto/resolve-approve-request.dto';
 import { Enroll, EnrollDocument } from './schema/enroll.schema.';
 import { Section, SectionDocument } from './schema/section.schema';
 import { Quiz, QuizDocument } from '@/question/schema/quiz.schema';
+import { Question, QuestionDocument } from '@/question/schema/question.schema';
 
 @Injectable()
 export class AdminCourseService {
@@ -33,6 +34,7 @@ export class AdminCourseService {
     @InjectModel(Section.name) private sectionModel: Model<SectionDocument>,
     @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>,
     @InjectModel(Quiz.name) private quizModel: Model<QuizDocument>,
+    @InjectModel(Question.name) private questionModel: Model<QuestionDocument>,
     private readonly categoryService: CategoryService,
   ) {}
 
@@ -307,5 +309,23 @@ export class AdminCourseService {
       ...course,
       sections,
     };
+  }
+
+  async getQuizzes(courseId: string) {
+    const rs = await this.quizModel
+      .find({
+        courseId: new ObjectId(courseId),
+      })
+      .populate('questions');
+
+    return rs;
+  }
+
+  async getQuestions(courseId: string) {
+    const rs = await this.questionModel.find({
+      courseId: new ObjectId(courseId),
+    });
+
+    return rs;
   }
 }

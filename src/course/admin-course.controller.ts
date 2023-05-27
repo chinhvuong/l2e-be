@@ -93,6 +93,20 @@ export class AdminCourseController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, SupperAdmin)
+  @Get(':id/questions')
+  async getCourseQuestions(@Param() { id }: CourseIdDto) {
+    return this.courseService.getQuestions(id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, SupperAdmin)
+  @Get(':id/quizzes')
+  async getCourseQuizzes(@Param() { id }: CourseIdDto) {
+    return this.courseService.getQuizzes(id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, SupperAdmin)
   @Get(':id')
   async getCourseDetail(@Param() { id }: CourseIdDto) {
     return this.courseService.courseDetail(id);
