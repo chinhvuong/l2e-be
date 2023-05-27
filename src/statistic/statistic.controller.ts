@@ -22,4 +22,17 @@ export class StatisticController {
   async getDataStatistic() {
     return this.statisticService.getStatisticData();
   }
+
+  @Get('course')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, SupperAdmin)
+  async getCourseStatistic() {
+    return this.statisticService.courseStatistic();
+  }
+  @Get('handle-data')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, SupperAdmin)
+  async handleStatistic() {
+    return this.statisticService.handleStatistic();
+  }
 }

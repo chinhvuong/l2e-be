@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Certificate } from 'crypto';
 import moment from 'moment';
 import { Model } from 'mongoose';
+import { start } from 'repl';
 import { Statistic, StatisticDocument } from './entities/statistic.schema';
 
 @Injectable()
@@ -143,5 +144,37 @@ export class StatisticService {
       },
     });
     return count;
+  }
+
+  async courseStatistic() {
+    const [total, minted] = await Promise.all([
+      this.courseModel.count(),
+      this.courseModel.count({
+        courseId: {
+          $gt: 0,
+        },
+      }),
+    ]);
+
+    return {
+      total,
+      minted,
+      unMint: total - minted,
+    };
+  }
+
+  async handleStatistic() {
+    const stats = await this.statisticModel.find();
+    return await Promise.all(
+      stats.map(async (statistic) => {
+        const time = moment(new Date(statistic['createdAt']))
+          .startOf('hour')
+          .subtract(1, 'hour')
+          .toDate();
+        statistic.time = time;
+        statistic.save();
+        return statistic;
+      }),
+    );
   }
 }
