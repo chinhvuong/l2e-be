@@ -70,7 +70,7 @@ export class StatisticService {
           time: true,
         },
       )
-      .sort({ date: -1 })
+      .sort({ time: -1 })
       .limit(23);
 
     const startOfHour = moment().startOf('hour').toDate();
@@ -82,7 +82,7 @@ export class StatisticService {
         this.countUser(startOfHour, now),
         this.countCertificate(startOfHour, now),
       ]);
-    return [
+    const rs = [
       ...data,
       {
         revenue,
@@ -92,6 +92,8 @@ export class StatisticService {
         time: startOfHour,
       },
     ];
+
+    return rs.reverse();
   }
 
   async getRevenue(start: Date, end: Date) {
