@@ -90,4 +90,11 @@ export class AdminCourseController {
   async getUserEnrollCourse(@Param() { id }: CourseIdDto) {
     return this.courseService.getEnrollUsers(id);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, SupperAdmin)
+  @Get(':id')
+  async getCourseDetail(@Param() { id }: CourseIdDto) {
+    return this.courseService.courseDetail(id);
+  }
 }

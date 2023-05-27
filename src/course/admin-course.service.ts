@@ -20,6 +20,8 @@ import {
 import { ApproveFindAllDto } from './dto/approve-request-find-all.dto';
 import { ResolveApproveRequestDto } from './dto/resolve-approve-request.dto';
 import { Enroll, EnrollDocument } from './schema/enroll.schema.';
+import { Section, SectionDocument } from './schema/section.schema';
+import { Quiz, QuizDocument } from '@/question/schema/quiz.schema';
 
 @Injectable()
 export class AdminCourseService {
@@ -28,7 +30,9 @@ export class AdminCourseService {
     private model: Model<CourseDocument>,
     @InjectModel(RequestApprove.name)
     private requestApproveModel: Model<RequestApproveDocument>,
+    @InjectModel(Section.name) private sectionModel: Model<SectionDocument>,
     @InjectModel(Enroll.name) private enrollModel: Model<EnrollDocument>,
+    @InjectModel(Quiz.name) private quizModel: Model<QuizDocument>,
     private readonly categoryService: CategoryService,
   ) {}
 
@@ -223,5 +227,87 @@ export class AdminCourseService {
       .populate('userId')
       .sort({ createdAt: -1 });
     return rs.map((e) => e.userId);
+  }
+
+  async courseDetail(courseId: string) {
+    const course = await this.model
+      .findOne({
+        _id: new ObjectId(courseId),
+      })
+      .populate('finalTest')
+      .lean();
+    if (!course) {
+      throw new NotFoundException();
+    }
+
+    const sections = await this.sectionModel.aggregate([
+      {
+        $match: {
+          courseId: course._id,
+        },
+      },
+      {
+        $lookup: {
+          from: 'lessons',
+          let: { sectionId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$sectionId', '$$sectionId'] },
+              },
+            },
+            {
+              $sort: {
+                order: 1,
+              },
+            },
+          ],
+          as: 'lessons',
+        },
+      },
+      {
+        $sort: {
+          order: 1,
+        },
+      },
+    ]);
+
+    course['sections'] = sections;
+
+    for (let i = 0; i < sections.length; i++) {
+      for (let j = 0; j < sections[i].lessons.length; j++) {
+        if (sections[i].lessons[j].quizzes?.length) {
+          const quizzesList = await this.quizModel.aggregate([
+            {
+              $match: {
+                _id: {
+                  $in: sections[i].lessons[j].quizzes.map(
+                    (item: string) => new ObjectId(item),
+                  ),
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                questions: 1,
+                courseId: 1,
+                name: 1,
+                createdAt: 1,
+                updatedAt: 1,
+              },
+            },
+          ]);
+          sections[i].lessons[j].quizzes = quizzesList;
+        }
+        sections[i].lessons[j].learned =
+          !!sections[i].lessons[j]?.quizzes[0].play;
+      }
+    }
+
+    return {
+      ...course,
+      sections,
+    };
   }
 }

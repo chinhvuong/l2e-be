@@ -2,13 +2,13 @@ import { CertificateDocument } from '@/certificate/entities/certificate.schema';
 import { Course, CourseDocument } from '@/course/schema/course.schema';
 import { Enroll, EnrollDocument } from '@/course/schema/enroll.schema.';
 import { User, UserDocument } from '@/user/schema/user.schema';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Certificate } from 'crypto';
 import moment from 'moment';
 import { Model } from 'mongoose';
-import { start } from 'repl';
 import { Statistic, StatisticDocument } from './entities/statistic.schema';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class StatisticService {
