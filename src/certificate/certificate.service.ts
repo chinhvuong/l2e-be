@@ -231,7 +231,7 @@ export class CertificateService {
     for (const key in data) {
       content = content.replace(key, data[key]);
     }
-    content.replace(/&/g, '&#38;');
+    content = content.replace(/&/g, '&#38;');
     // console.log(content);
 
     const rs = await this.s3Service.uploadCert(
