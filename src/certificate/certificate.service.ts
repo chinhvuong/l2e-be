@@ -221,7 +221,7 @@ export class CertificateService {
     if (!cert) {
       return cert;
     }
-    console.log(cert);
+    // console.log(cert);
 
     const data = {
       courseName: cert?.course.name,
@@ -231,7 +231,8 @@ export class CertificateService {
     for (const key in data) {
       content = content.replace(key, data[key]);
     }
-    console.log(content);
+    content.replace(/&/g, '&#38;');
+    // console.log(content);
 
     const rs = await this.s3Service.uploadCert(
       `${data.fullName.trim()}-${cert.courseId}.svg`,
