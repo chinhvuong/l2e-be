@@ -744,10 +744,6 @@ export class CourseService {
   }
 
   async learnCourse(userId: string, courseId: string) {
-    const checkEnroll = await this.checkEnroll(userId, courseId);
-    if (!checkEnroll.enroll) {
-      throw new ForbiddenException();
-    }
     const course = await this.model
       .findOne({
         _id: new ObjectId(courseId),
@@ -777,6 +773,13 @@ export class CourseService {
         lean: true,
       },
     );
+    if (author?._id?.toString() !== userId) {
+      const checkEnroll = await this.checkEnroll(userId, courseId);
+      if (!checkEnroll.enroll) {
+        throw new ForbiddenException();
+      }
+    }
+
     const sections = await this.sectionModel.aggregate([
       {
         $match: {
