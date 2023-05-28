@@ -738,12 +738,36 @@ export class CourseService {
       userId: new ObjectId(userId),
       courseId: new ObjectId(courseId),
     });
+    if (enroll === 0) {
+      const [user, course] = await Promise.all([
+        this.userService.findOneBy({
+          _id: new ObjectId(userId),
+        }),
+        this.model.findOne({
+          _id: new ObjectId(courseId),
+        }),
+      ]);
+      if (
+        user &&
+        course &&
+        (user.walletAddress.toLowerCase() === course.owner.toLowerCase() ||
+          user.walletAddress.toLowerCase() === course.author.toLowerCase())
+      ) {
+        return {
+          enroll: true,
+        };
+      }
+    }
     return {
       enroll: enroll > 0,
     };
   }
 
   async learnCourse(userId: string, courseId: string) {
+    const checkEnroll = await this.checkEnroll(userId, courseId);
+    if (!checkEnroll.enroll) {
+      throw new ForbiddenException();
+    }
     const course = await this.model
       .findOne({
         _id: new ObjectId(courseId),
@@ -773,12 +797,6 @@ export class CourseService {
         lean: true,
       },
     );
-    if (author?._id?.toString() !== userId) {
-      const checkEnroll = await this.checkEnroll(userId, courseId);
-      if (!checkEnroll.enroll) {
-        throw new ForbiddenException();
-      }
-    }
 
     const sections = await this.sectionModel.aggregate([
       {
