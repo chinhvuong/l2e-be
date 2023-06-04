@@ -93,7 +93,7 @@ export class StatisticService {
       },
     ];
 
-    return rs.reverse();
+    return rs;
   }
 
   async getRevenue(start: Date, end: Date) {
