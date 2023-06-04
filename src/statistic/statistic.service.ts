@@ -83,7 +83,6 @@ export class StatisticService {
         this.countCertificate(startOfHour, now),
       ]);
     const rs = [
-      ...data,
       {
         revenue,
         courseCount,
@@ -91,9 +90,10 @@ export class StatisticService {
         certificateCount,
         time: startOfHour,
       },
+      ...data,
     ];
 
-    return rs;
+    return rs.reverse();
   }
 
   async getRevenue(start: Date, end: Date) {
