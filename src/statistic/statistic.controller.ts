@@ -1,6 +1,6 @@
 import { JwtAuthGuard } from '@/auth/strategies/jwt-auth.guard';
 import { SupperAdmin } from '@/auth/strategies/supper-admin.guard';
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { StatisticService } from './statistic.service';
 
@@ -42,5 +42,10 @@ export class StatisticController {
   @UseGuards(JwtAuthGuard, SupperAdmin)
   async handleStatistic() {
     return this.statisticService.handleStatistic();
+  }
+
+  @Get('calculate')
+  async calculate(@Query() step: number) {
+    return this.statisticService.calculate(Number(step) ? Number(step) : 10);
   }
 }

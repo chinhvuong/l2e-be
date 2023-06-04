@@ -113,6 +113,10 @@ export class StatisticService {
         },
       },
     ]);
+    console.log(
+      '🚀 ~ file: statistic.service.ts:116 ~ StatisticService ~ getRevenue ~ aggregateResult:',
+      aggregateResult,
+    );
 
     const sumPriceInRange = aggregateResult[0]?.total || 0;
     return sumPriceInRange;
@@ -216,5 +220,45 @@ export class StatisticService {
         return statistic;
       }),
     );
+  }
+
+  async calculate(step: number) {
+    let end = moment().startOf('hour').toDate();
+    let i = 0;
+    while (i < step) {
+      const start = moment(end).subtract(1, 'hour').toDate();
+      const [revenue, courseCount, userCount, certificateCount] =
+        await Promise.all([
+          this.getRevenue(start, end),
+          this.countCourse(start, end),
+          this.countUser(start, end),
+          this.countCertificate(start, end),
+        ]);
+      console.log({
+        revenue,
+        courseCount,
+        userCount,
+        certificateCount,
+        time: start,
+      });
+
+      await this.statisticModel.findOneAndUpdate(
+        {
+          time: start,
+        },
+        {
+          revenue,
+          courseCount,
+          userCount,
+          certificateCount,
+        },
+        {
+          upsert: true,
+          new: true,
+        },
+      );
+      end = start;
+      i++;
+    }
   }
 }

@@ -15,7 +15,7 @@ export class AggregateStatistic {
     private statisticModel: Model<StatisticDocument>,
   ) {}
 
-  @Cron('0 * * * *', {
+  @Cron('1 * * * *', {
     // timeZone: 'utc',
   })
   async handleCron() {
@@ -38,13 +38,9 @@ export class AggregateStatistic {
   }
 
   getStartAndEndTime() {
-    const endMoment = moment().startOf('hour');
-    const start = endMoment.subtract(1, 'hour').toDate();
-    const end = endMoment.toDate();
-
     return {
-      start,
-      end,
+      start: moment().startOf('hour').subtract(1, 'hour').toDate(),
+      end: moment().startOf('hour').toDate(),
     };
   }
 }
